@@ -1,0 +1,111 @@
+[
+    {
+        "name": "phalcon/dd",
+        "version": "v1.1.3",
+        "version_normalized": "1.1.3.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/phalcon/dd.git",
+            "reference": "71a05c4f8d4b4216638f61d0c0be312799b0ab08"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/phalcon/dd/zipball/71a05c4f8d4b4216638f61d0c0be312799b0ab08",
+            "reference": "71a05c4f8d4b4216638f61d0c0be312799b0ab08",
+            "shasum": ""
+        },
+        "require": {
+            "ext-phalcon": "^3.0 || ^4.0",
+            "php": "^5.4 || ^7.0"
+        },
+        "time": "2019-07-26T05:29:31+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "files": [
+                "src/helper.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "authors": [
+            {
+                "name": "Phalcon Team",
+                "email": "team@phalconphp.com",
+                "homepage": "http://phalconphp.com/en/team"
+            },
+            {
+                "name": "Contributors",
+                "homepage": "https://github.com/phalcon/dd/graphs/contributors"
+            }
+        ],
+        "description": "This package will add the `dd` and `dump` helpers to your Phalcon application.",
+        "homepage": "https://github.com/phalcon/dd",
+        "keywords": [
+            "VarDumper",
+            "dd",
+            "debug",
+            "dump",
+            "phalcon",
+            "utils"
+        ]
+    },
+    {
+        "name": "swiftmailer/swiftmailer",
+        "version": "v5.4.12",
+        "version_normalized": "5.4.12.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/swiftmailer/swiftmailer.git",
+            "reference": "181b89f18a90f8925ef805f950d47a7190e9b950"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/181b89f18a90f8925ef805f950d47a7190e9b950",
+            "reference": "181b89f18a90f8925ef805f950d47a7190e9b950",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.3"
+        },
+        "require-dev": {
+            "mockery/mockery": "~0.9.1",
+            "symfony/phpunit-bridge": "~3.2"
+        },
+        "time": "2018-07-31T09:26:32+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "5.4-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "files": [
+                "lib/swift_required.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Chris Corbyn"
+            },
+            {
+                "name": "Fabien Potencier",
+                "email": "fabien@symfony.com"
+            }
+        ],
+        "description": "Swiftmailer, free feature-rich PHP mailer",
+        "homepage": "https://swiftmailer.symfony.com",
+        "keywords": [
+            "email",
+            "mail",
+            "mailer"
+        ]
+    }
+]
