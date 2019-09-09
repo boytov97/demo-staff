@@ -1,0 +1,24 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+}
+
+.form__wrapper {
+    width: 500px;
+    margin: 40px auto;
+}
+
+.forgot-password_wrapper {
+    text-align: center;
+}
+
+@media screen and (max-width: 430px) {
+    .form__wrapper {
+        width: 75%;
+        margin: 40px auto;
+    }
+}

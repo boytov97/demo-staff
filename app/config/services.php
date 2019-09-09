@@ -1,7 +1,7 @@
 <?php
 
+use Phalcon\Crypt;
 use Phalcon\Mvc\View;
-use Phalcon\Mvc\View\Engine\Php as PhpEngine;
 use Phalcon\Mvc\Url as UrlResolver;
 use Phalcon\Mvc\View\Engine\Volt as VoltEngine;
 use Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter;
@@ -28,6 +28,13 @@ $di->setShared('url', function () {
 });
 
 /**
+ * Loading routes from the routes.php file
+ */
+$di->set('router', function () {
+    return require APP_PATH . '/config/router.php';
+});
+
+/**
  * Setting up the view component
  */
 $di->setShared('view', function () {
@@ -46,12 +53,11 @@ $di->setShared('view', function () {
             $volt->setOptions([
                 'compiledPath' => $config->application->cacheDir,
                 'compiledSeparator' => '_'
+                //'compileAlways' => true
             ]);
 
             return $volt;
-        },
-        '.phtml' => PhpEngine::class
-
+        }
     ]);
 
     return $view;
@@ -90,6 +96,20 @@ $di->setShared('modelsMetadata', function () {
 });
 
 /**
+ * Custom authentication component
+ */
+$di->set('auth', function () {
+    return new Auth();
+});
+
+/**
+ * Mail service uses AmazonSES
+ */
+$di->set('mail', function () {
+    return new Mail();
+});
+
+/**
  * Register the session flash service with the Twitter Bootstrap classes
  */
 $di->set('flash', function () {
@@ -109,4 +129,15 @@ $di->setShared('session', function () {
     $session->start();
 
     return $session;
+});
+
+/**
+ * Crypt service
+ */
+$di->set('crypt', function () {
+    $config = $this->getConfig();
+
+    $crypt = new Crypt();
+    $crypt->setKey($config->application->cryptSalt);
+    return $crypt;
 });
