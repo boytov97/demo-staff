@@ -10,6 +10,5 @@ class ControllerBase extends Controller
     {
         $this->identity = $this->auth->getIdentity();
         $this->view->setVar('logged_in', is_array($this->identity));
-        $this->view->setTemplateBefore('public');
     }
 }

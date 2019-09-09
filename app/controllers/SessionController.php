@@ -2,6 +2,12 @@
 
 class SessionController extends ControllerBase
 {
+    public function initialize()
+    {
+        $this->view->setTemplateBefore('public');
+        return parent::initialize();
+    }
+
     public function indexAction()
     {
         $this->view->pick('session/login');
@@ -26,7 +32,7 @@ class SessionController extends ControllerBase
                         'remember' => $this->request->getPost('remember')
                     ]);
 
-                    return $this->response->redirect('index');
+                    return $this->response->redirect('hours');
                 }
             }
         } catch (AuthException $e) {
@@ -75,7 +81,7 @@ class SessionController extends ControllerBase
     {
         $this->auth->remove();
 
-        return $this->response->redirect('index');
+        return $this->response->redirect('login');
     }
 }
 

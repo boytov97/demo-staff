@@ -16,6 +16,29 @@ a {
     text-align: center;
 }
 
+.table__wrapper {
+    width: 100%;
+    overflow-x: scroll;
+    margin: 50px 0;
+}
+
+.day_of_weeks {
+    padding: 5px 15px;
+    margin: 0 10px;
+    background: #fff;
+    border: 1px solid #1c7430;
+    color: #1c7430;
+    font-weight: 500;
+}
+
+.current_working_line {
+    background: #f4f4f4;
+}
+
+.not_current_working_line {
+    display: none;
+}
+
 @media screen and (max-width: 430px) {
     .form__wrapper {
         width: 75%;

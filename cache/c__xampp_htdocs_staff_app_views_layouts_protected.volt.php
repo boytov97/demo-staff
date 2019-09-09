@@ -15,7 +15,7 @@
     </ul>
     <div class="form-inline my-2 my-lg-0">
       <?php if (isset($logged_in) && !(empty($logged_in))) { ?>
-          <?= $this->tag->linkTo(['admin/index', 'Admin', 'class' => 'btn btn-outline-primary']) ?>
+          <?= $userName ?>
 
           <a href="<?= $this->url->get(['for' => 'session-logout']) ?>" class="btn btn-light">Logout</a>
       <?php } else { ?>

@@ -14,5 +14,6 @@
 
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 		<?= $this->tag->javascriptInclude('bootstrap/js/bootstrap.js') ?>
+		<?= $this->tag->javascriptInclude('js/script.js') ?>
 	</body>
 </html>
