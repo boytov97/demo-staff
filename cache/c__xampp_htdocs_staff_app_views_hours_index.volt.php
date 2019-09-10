@@ -15,35 +15,8 @@
                         <?php } ?>
                     </tr>
                   </thead>
-                  <tbody>
-                    <?php foreach ($datesMonth as $position => $date) { ?>
-                        <tr class="<?= (($currentDate == $date['date']) ? 'current_working_line' : 'full_day not_current_working_line') ?>">
-                          <td scope="row"><?= $position ?>
-                               <span class="day_of_weeks"><?= $date['day'] ?></span>
-                          </td>
-
-                          <?php foreach ($users as $user) { ?>
-                             <td>
-                                 <?php if ($user->name === $userName) { ?>
-                                    <?php foreach ($user->hours as $hour) { ?>
-                                        <?php if ($hour->createdAt == $date['date']) { ?>
-                                            <?= ($hour->start ? $hour->start : '<a href="">start</a>') ?>
-                                             - <?= ($hour->end ? $hour->end : '<a href="">stop</a>') ?>
-                                        <?php } ?>
-                                    <?php } ?>
-                                 <?php } else { ?>
-                                    <?php if ($currentDate != $date['date']) { ?>
-                                        <?php foreach ($user->hours as $hour) { ?>
-                                            <?php if ($hour->createdAt == $date['date']) { ?>
-                                                <?= $hour->start ?> - <?= $hour->end ?>
-                                            <?php } ?>
-                                        <?php } ?>
-                                    <?php } ?>
-                                 <?php } ?>
-                             </td>
-                          <?php } ?>
-                        </tr>
-                    <?php } ?>
+                  <tbody class="working_table_list">
+                        <?php $this->partial('hours/table', ['datesMonth' => $datesMonth, 'users' => $users, 'currentDate' => $currentDate, 'userName' => $userName]); ?>
                   </tbody>
                 </table>
              <?php } else { ?>

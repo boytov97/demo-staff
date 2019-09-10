@@ -32,7 +32,7 @@ class SessionController extends ControllerBase
                         'remember' => $this->request->getPost('remember')
                     ]);
 
-                    return $this->response->redirect('hours');
+                    return $this->response->redirect('hours/index');
                 }
             }
         } catch (AuthException $e) {

@@ -12,7 +12,7 @@
 
 		<?= $this->getContent() ?>
 
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<?= $this->tag->javascriptInclude('js/jquery-2.2.4.js') ?>
 		<?= $this->tag->javascriptInclude('bootstrap/js/bootstrap.js') ?>
 		<?= $this->tag->javascriptInclude('js/script.js') ?>
 	</body>

@@ -84,6 +84,8 @@ CREATE TABLE IF NOT EXISTS `hours` (
 `usersId` int(10) unsigned NOT NULL,
 `start` time DEFAULT NULL,
 `end` time DEFAULT NULL,
+`total` time DEFAULT NULL,
+`less` time DEFAULT NULL,
 `createdAt` date NOT NULL,
 PRIMARY KEY (`id`),
 KEY `usersId` (`usersId`)
