@@ -33,13 +33,6 @@ class HoursController extends ControllerBase
 
     public function updateAction()
     {
-        $this->view->pick('hours/table');
-
-        $this->view->disableLevel([
-            View::LEVEL_MAIN_LAYOUT => false,
-            View::LEVEL_BEFORE_TEMPLATE => false
-        ]);
-
         if($this->request->isPost()) {
             $start = $this->request->getPost('start') ? date('H:i:s') : null;
             $end = $this->request->getPost('end') ? date('H:i:s') : null;
@@ -60,25 +53,25 @@ class HoursController extends ControllerBase
 
             $hour->save();
 
+            $response = new Response();
+
             if(!$hour->save()) {
-                $response = new Response();
+
                 $response->setStatusCode(500, 'Internal Server Error');
                 $response->setContent(json_encode($hour->getMessages()));
 
                 return $response;
             } else {
-                $query = $this->modelsManager->createQuery('SELECT * FROM Users ORDER BY id = :id: DESC');
-                $users  = $query->execute([
-                    'id' => $this->identity['id']
-                ]);
 
-                if(count($users)) {
-                    $this->view->users = $users;
-                    $this->view->currentDate = date('Y-m-d');
-                    $this->view->datesMonth = $this->getDates(9, 2019);
-                }
+                $response->setStatusCode(200, 'OK');
+                $response->setContent(json_encode(['hours' => [
+                        'start' => $hour->start ?: $start,
+                        'end'   => $end,
+                        'total' => $this->getTotal($hour->start)
+                    ]
+                ]));
 
-                $this->view->userName = $this->identity['name'];
+                return $response;
             }
         }
     }

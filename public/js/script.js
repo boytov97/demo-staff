@@ -5,10 +5,6 @@ $(document).ready(function () {
         });
     });
 
-    function startUpdatingInterval() {
-        setInterval(updateWorkingHours, 5000, null, null);
-    }
-
     function initializeStartAndStop() {
 
         $('.update-hours').on('click', function (e) {
@@ -19,7 +15,6 @@ $(document).ready(function () {
 
             if(element.attr('name') === 'start') {
                 updateActions['start'] = 1;
-                setTimeout(startUpdatingInterval, 5000);
             }
 
             if(element.attr('name') === 'stop') {
@@ -48,7 +43,9 @@ $(document).ready(function () {
                 }
             },
             success: function (data) {
-                $('.working_table_list').html(data);
+
+                console.log(data);
+
                 initializeStartAndStop();
             },
             error: function (errors) {
