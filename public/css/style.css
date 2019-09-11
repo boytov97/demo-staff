@@ -39,6 +39,21 @@ a {
     display: none;
 }
 
+.hours__wrapper {
+    display: inline;
+    font-size: 14px;
+}
+
+.total-hour {
+    color: green;
+    font-weight: 700;
+}
+
+.less-hour {
+    color: red;
+    font-weight: 700;
+}
+
 @media screen and (max-width: 430px) {
     .form__wrapper {
         width: 75%;

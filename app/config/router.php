@@ -54,4 +54,12 @@ $router->add(
     ]
 )->setName('session-forgot-password');
 
+$router->addPost(
+    '/hours/update',
+    [
+        'controller' => 'hours',
+        'action'     => 'update',
+    ]
+)->setName('hours-update');
+
 return $router;

@@ -41,8 +41,8 @@ class HoursController extends ControllerBase
         ]);
 
         if($this->request->isPost()) {
-            $start = $this->request->getPost('start') ? date('G:i:s') : null;
-            $end = $this->request->getPost('end') ? date('G:i:s') : null;
+            $start = $this->request->getPost('start') ? date('H:i:s') : null;
+            $end = $this->request->getPost('end') ? date('H:i:s') : null;
 
             $hour = Hours::findFirst([
                 'usersId = ?0 AND createdAt = ?1',
@@ -52,11 +52,10 @@ class HoursController extends ControllerBase
                 ]
             ]);
 
-            //total
-
             $hour->assign([
                 'start' => $hour->start ?: $start,
                 'end'   => $end,
+                'total' => $this->getTotal($hour->start)
             ]);
 
             $hour->save();
@@ -121,6 +120,19 @@ class HoursController extends ControllerBase
         }
 
         return $datesMonth;
+    }
+
+    protected function getTotal($start)
+    {
+        $strStart = $start ? date('Y-m-d') . $start : date('Y-m-d H:i:s');
+        $strEnd = date('Y-m-d H:i:s');
+
+        $dteStart = new DateTime($strStart);
+        $dteEnd   = new DateTime($strEnd);
+
+        $dteDiff  = $dteStart->diff($dteEnd);
+
+        return $dteDiff->format("%H:%I:%S");
     }
 }
 

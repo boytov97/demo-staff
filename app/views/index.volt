@@ -12,8 +12,9 @@
 
 		{{ content() }}
 
-		{{ javascript_include('js/jquery-2.2.4.js') }}
-		{{ javascript_include('bootstrap/js/bootstrap.js') }}
-		{{ javascript_include('js/script.js') }}
+        {{ javascript_include('js/jquery-2.2.4.js') }}
+        {{ javascript_include('bootstrap/js/bootstrap.js') }}
+        {{ javascript_include('js/script.js') }}
+
 	</body>
 </html>

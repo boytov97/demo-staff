@@ -5,48 +5,57 @@ $(document).ready(function () {
         });
     });
 
-    function sendStartAndStop() {
-        $('#start-time').on('click', function(e) {
+    function startUpdatingInterval() {
+        setInterval(updateWorkingHours, 5000, null, null);
+    }
+
+    function initializeStartAndStop() {
+
+        $('.update-hours').on('click', function (e) {
             e.preventDefault();
 
-            $.ajax({
-                type: 'POST',
-                url: $(this).attr('href'),
-                data: {'start': 1},
-                beforeSend: function() {
-                    $('#start-time').prop('disabled', true);
-                    $('#start-time').val('starting...');
-                },
-                success: function (data) {
-                    $('.working_table_list').html(data);
-                    sendStartAndStop();
-                },
-                error: function (errors) {
-                    alert(errors.status + ' ' + errors.statusText);
-                }
-            });
-        });
+            var element = $(this);
+            var updateActions = {};
 
-        $('#stop-time').on('click', function(e) {
-            e.preventDefault();
+            if(element.attr('name') === 'start') {
+                updateActions['start'] = 1;
+                setTimeout(startUpdatingInterval, 5000);
+            }
 
-            $.ajax({
-                type: 'POST',
-                url: $(this).attr('href'),
-                data: {'start': 1, 'end': 1},
-                beforeSend: function() {
-                    $('#stop-time').prop('disabled', true);
-                    $('#stop-time').val('starting...');
-                },
-                success: function (data) {
-                    $('.working_table_list').html(data);
-                },
-                error: function (errors) {
-                    alert(errors.status + ' ' + errors.statusText);
-                }
-            });
+            if(element.attr('name') === 'stop') {
+                updateActions['end'] = 1;
+            }
+
+            updateWorkingHours(updateActions, element);
         });
     }
 
-    sendStartAndStop();
+    function updateWorkingHours(updateActions, element) {
+
+        if (updateActions === null) {
+            updateActions = {'update': 1};
+        }
+
+        var url = $('#update-hours-link').val();
+
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: updateActions,
+            beforeSend: function() {
+                if(element !== null) {
+                    element.prop('disabled', true);
+                }
+            },
+            success: function (data) {
+                $('.working_table_list').html(data);
+                initializeStartAndStop();
+            },
+            error: function (errors) {
+                alert(errors.status + ' ' + errors.statusText);
+            }
+        });
+    }
+
+    initializeStartAndStop();
 });
