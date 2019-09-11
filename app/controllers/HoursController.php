@@ -20,9 +20,10 @@ class HoursController extends ControllerBase
             'id' => $this->identity['id']
         ]);
 
-        $this->create($currentDate);
+        $hourStart = $this->create($currentDate);
 
         if(count($users)) {
+            $this->view->hourStart = $hourStart;
             $this->view->users = $users;
             $this->view->currentDate = $currentDate;
             $this->view->datesMonth = $this->getDates(9, 2019);
@@ -73,6 +74,7 @@ class HoursController extends ControllerBase
                 ]);
 
                 if(count($users)) {
+                    $this->view->hourStart = $hour->start;
                     $this->view->users = $users;
                     $this->view->currentDate = date('Y-m-d');
                     $this->view->datesMonth = $this->getDates(9, 2019);
@@ -103,6 +105,8 @@ class HoursController extends ControllerBase
                 $this->flash->error($hour->getMessages());
             }
         }
+
+        return $hour->start;
     }
 
     protected function getDates($month, $year)
