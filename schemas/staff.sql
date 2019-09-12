@@ -74,3 +74,30 @@ CREATE TABLE IF NOT EXISTS `reset_passwords` (
   KEY `usersId` (`usersId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
+--
+-- Table structure for table `clocks`
+--
+
+DROP TABLE IF EXISTS `hours`;
+CREATE TABLE IF NOT EXISTS `hours` (
+`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+`usersId` int(10) unsigned NOT NULL,
+`total` time DEFAULT NULL,
+`less` time DEFAULT NULL,
+`createdAt` date NOT NULL,
+PRIMARY KEY (`id`),
+KEY `usersId` (`usersId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- Table structure for table `clocks`
+--
+
+DROP TABLE IF EXISTS `start_end`;
+CREATE TABLE IF NOT EXISTS `start_end` (
+`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+`hourId` int(10) unsigned NOT NULL,
+`start` time DEFAULT NULL,
+`end` time DEFAULT NULL,
+PRIMARY KEY (`id`),
+KEY `hourId` (`hourId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

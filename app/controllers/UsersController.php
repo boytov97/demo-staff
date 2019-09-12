@@ -2,9 +2,10 @@
 
 class UsersController extends ControllerBase
 {
-    public function indexAction()
+    public function initialize()
     {
-
+        $this->view->setTemplateBefore('public');
+        return parent::initialize();
     }
 
     public function changePasswordAction()

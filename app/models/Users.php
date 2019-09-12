@@ -82,6 +82,13 @@ class Users extends \Phalcon\Mvc\Model
                 'message' => 'User cannot be deleted because he/she has activity in the system'
             ]
         ]);
+
+        $this->hasMany('id', 'Hours', 'usersId', [
+            'alias' => 'hours',
+            'foreignKey' => [
+                'message' => 'User cannot be deleted because he/she has activity in the system'
+            ]
+        ]);
     }
 
     /**

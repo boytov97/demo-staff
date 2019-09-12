@@ -16,6 +16,59 @@ a {
     text-align: center;
 }
 
+.table__wrapper {
+    width: 100%;
+    overflow-x: scroll;
+    margin: 50px 0;
+}
+
+.day_of_weeks {
+    padding: 5px 15px;
+    margin: 0 10px;
+    background: #fff;
+    border: 1px solid #1c7430;
+    color: #1c7430;
+    font-weight: 500;
+}
+
+.current_working_line {
+    background: #9fcdff;
+}
+
+.not_current_working_line {
+    display: none;
+}
+
+.hours__wrapper {
+    display: inline;
+    font-size: 14px;
+}
+
+.total-hour {
+    color: green;
+    font-weight: 700;
+}
+
+.less-hour {
+    color: red;
+    font-weight: 700;
+}
+
+.update-hours {
+    display: inline-block;
+    margin: 5px;
+    padding: 5px 10px;
+    font-weight: 600;
+    color: #fff;
+    background: #897261;
+}
+
+.year-month_selector {
+    width: 100%;
+    text-align: center;
+    margin-top: 30px;
+}
+
 @media screen and (max-width: 430px) {
     .form__wrapper {
         width: 75%;

@@ -1,3 +1,4 @@
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -15,7 +16,7 @@
     </ul>
     <div class="form-inline my-2 my-lg-0">
       {% if logged_in is defined and not(logged_in is empty) %}
-          {{ link_to('admin/index', 'Admin', 'class': 'btn btn-outline-primary') }}
+          {{ authUser['name'] }}
 
           <a href="{{ url(['for': 'session-logout']) }}" class="btn btn-light">Logout</a>
       {% else %}
