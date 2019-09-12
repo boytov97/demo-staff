@@ -16,6 +16,5 @@
 
         {{ javascript_include('bootstrap/js/bootstrap.js') }}
 
-
 	</body>
 </html>

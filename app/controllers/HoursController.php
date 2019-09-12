@@ -11,29 +11,28 @@ class HoursController extends ControllerBase
     public function initialize()
     {
         $this->view->setTemplateBefore('protected');
-        $this->month = date('m');
-        $this->year = date('Y');
-
         return parent::initialize();
     }
 
     public function beforeExecuteRoute()
     {
-        if($this->request->isAjax()) {
-
-            if($month = $this->request->getPost('month')) {
-                $this->month = $month;
-            }
-
-            if($year = $this->request->getPost('year')) {
-                $this->year = $year;
-            }
-        }
+        $this->month = date('m');
+        $this->year = date('Y');
     }
 
     public function indexAction()
     {
         $currentDate = date('Y-m-d');
+
+        if(!$this->request->isPost()) {
+            if($month = $this->request->get('month')) {
+                $this->month = $month;
+            }
+
+            if($year = $this->request->get('year')) {
+                $this->year = $year;
+            }
+        }
 
         $query = $this->modelsManager->createQuery('SELECT * FROM Users ORDER BY id = :id: DESC');
         $users  = $query->execute([
@@ -62,11 +61,14 @@ class HoursController extends ControllerBase
             $this->view->lastStartTime = $lastStartTime;
             $this->view->users = $users;
             $this->view->currentDate = $currentDate;
-            $this->view->datesMonth = $this->getDates(9, 2019);
+            $this->view->datesMonth = $this->getDates($this->month, $this->year);
         }
 
         $this->view->authUser = $this->identity;
         $this->view->years = $this->getYears();
+        $this->view->months = $this->getMonth();
+        $this->view->defaultYear = $this->year;
+        $this->view->defaultMonth = $this->month;
     }
 
     public function updateAction($id, $startEndId)
@@ -248,5 +250,16 @@ class HoursController extends ControllerBase
         }
 
         return $years;
+    }
+
+    protected function getMonth()
+    {
+        $months = [];
+
+        for ($month = 1; $month <= 12; $month++) {
+            $months[$month] = date('F', mktime(0,0,0, $month, 1, date('Y')));
+        }
+
+        return $months;
     }
 }
