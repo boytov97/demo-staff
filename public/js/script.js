@@ -5,6 +5,10 @@ $(document).ready(function () {
         });
     });
 
+    function startUpdateInterval() {
+        setInterval(updateTotal, 5000);
+    }
+
     function initializeStartAndStop() {
 
         $('.update-hours').on('click', function (e) {
@@ -14,11 +18,13 @@ $(document).ready(function () {
             var updateActions = {};
 
             if(element.attr('name') === 'start') {
-                updateActions['start'] = 1;
+                updateActions['action'] = 'start';
+
+                startUpdateInterval();
             }
 
             if(element.attr('name') === 'stop') {
-                updateActions['end'] = 1;
+                updateActions['action'] = 'stop';
             }
 
             updateWorkingHours(updateActions, element);
@@ -27,11 +33,14 @@ $(document).ready(function () {
 
     function updateWorkingHours(updateActions, element) {
 
-        if (updateActions === null) {
-            updateActions = {'update': 1};
+        if (element !== null) {
+            var url = element.attr('href');
         }
 
-        var url = $('#update-hours-link').val();
+        if (updateActions === null) {
+            updateActions = {'action': 'update'};
+            url = $('#update-hours-link').val();
+        }
 
         $.ajax({
             type: 'POST',
@@ -43,10 +52,50 @@ $(document).ready(function () {
                 }
             },
             success: function (data) {
+                var parsedData = $.parseJSON(data);
 
-                console.log(data);
+                $.each(parsedData.startEnds, function(key, value) {
+                    var startEnd = '.start-end_' + value.id;
+
+                    if(value.end === null && value.start !== null) {
+                        $(startEnd).find('a').attr('name', 'stop').html('stop');
+
+                        $(startEnd).html(value.start + ' - ' + $(startEnd).html());
+                    } else {
+                        if(value.end === null && value.start === null && parsedData.urlForNewStartEnd !== null) {
+                            $('.new-startEnd').last().append('<span class="start-end_'+ value.id +'"><a href="' + parsedData.urlForNewStartEnd + '" name="start" class="update-hours" >start</a></span>');
+                        } else {
+                            $(startEnd).html(value.start + ' - ' + value.end);
+
+                            if (parsedData.startEnds.length - 2 === key && parsedData.action === 'stop') {
+                                $(startEnd).parent().after('<center class="new-startEnd"></center>');
+                            }
+                        }
+                    }
+
+                    $('.auth-user-total').html('total: ' + parsedData.total);
+                });
 
                 initializeStartAndStop();
+            },
+            error: function (errors) {
+                alert(errors.status + ' ' + errors.statusText);
+            }
+        });
+    }
+
+    function updateTotal() {
+
+        var url = $('#update-hours-link').val();
+
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: {},
+            success: function (data) {
+                var parsedData = $.parseJSON(data);
+
+                $('.auth-user-total').html('total: ' + parsedData.total);
             },
             error: function (errors) {
                 alert(errors.status + ' ' + errors.statusText);

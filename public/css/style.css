@@ -54,6 +54,21 @@ a {
     font-weight: 700;
 }
 
+.update-hours {
+    display: inline-block;
+    margin: 5px;
+    padding: 5px 10px;
+    font-weight: 600;
+    color: #fff;
+    background: #897261;
+}
+
+.year-month_selector {
+    width: 100%;
+    text-align: center;
+    margin-top: 30px;
+}
+
 @media screen and (max-width: 430px) {
     .form__wrapper {
         width: 75%;

@@ -1,6 +1,6 @@
 <?php
 
-class Hours extends \Phalcon\Mvc\Model
+class StartEnd extends \Phalcon\Mvc\Model
 {
 
     /**
@@ -13,7 +13,7 @@ class Hours extends \Phalcon\Mvc\Model
      *
      * @var integer
      */
-    public $usersId;
+    public $hourId;
 
     /**
      *
@@ -28,28 +28,15 @@ class Hours extends \Phalcon\Mvc\Model
     public $end;
 
     /**
-     *
-     * @var integer
-     */
-    public $createdAt;
-
-    /**
      * Initialize method for model.
      */
     public function initialize()
     {
         $this->setSchema("staff");
-        $this->setSource("hours");
+        $this->setSource("start_end");
 
-        $this->belongsTo('usersId', 'Users', 'id', [
-            'alias' => 'user'
-        ]);
-
-        $this->hasMany('id', 'StartEnd', 'hourId', [
-            'alias' => 'startEnds',
-            'foreignKey' => [
-                'message' => 'User cannot be deleted because he/she has activity in the system'
-            ]
+        $this->belongsTo('hourId', 'Hours', 'id', [
+            'alias' => 'hour'
         ]);
     }
 
@@ -60,14 +47,14 @@ class Hours extends \Phalcon\Mvc\Model
      */
     public function getSource()
     {
-        return 'hours';
+        return 'start_end';
     }
 
     /**
      * Allows to query a set of records that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Hours[]|Hours|\Phalcon\Mvc\Model\ResultSetInterface
+     * @return StartEnd[]|StartEnd|\Phalcon\Mvc\Model\ResultSetInterface
      */
     public static function find($parameters = null)
     {
@@ -78,7 +65,7 @@ class Hours extends \Phalcon\Mvc\Model
      * Allows to query the first record that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Hours|\Phalcon\Mvc\Model\ResultInterface
+     * @return StartEnd|\Phalcon\Mvc\Model\ResultInterface
      */
     public static function findFirst($parameters = null)
     {
