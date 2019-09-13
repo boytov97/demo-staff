@@ -2,9 +2,9 @@
     <div class="row">
         <div class="row statistics__wrapper">
             <div class="col-md-6 user_statistics__wrapper">
-                <p>Total hours per month: <span class="total_hours_per_month">55:45:32</span></p>
-                <p>You have/Assigned: <span class="total_hours_per_month">55.15%</span></p>
-                <p>Assigned: <span class="total_hours_per_month">168</span></p>
+                <p>Total hours per month: <span class="total_hours_per_month">{{ totalPerMonth }}</span></p>
+                <p>You have/Assigned: <span class="total_hours_per_month">{{ percentOfTotal }}%</span></p>
+                <p>Assigned: <span class="total_hours_per_month">{{ workingDaysCount * 8 }}</span></p>
                 <span>Ты опаздал: <span class="total_hours_per_month">1 раз</span></span><br>
                 <span>Если общее кол-во опозданий превысит в сентябре.</span><br>
                 <span>В сентябре будут применятся штрафные санкции.</span>
@@ -102,7 +102,7 @@
                               {% for user in users %}
                                   <td>
                                       <div class="hours__wrapper">
-                                          <input type="checkbox" disabled checked>
+                                          <input type="checkbox" disabled {{ date['working_day'] ? 'checked' : '' }}>
 
                                           {% for hour in user.hours %}
                                                 {% if hour.createdAt == date['date'] %}
@@ -178,7 +178,7 @@
         var updateTotalInterval;
 
         function startUpdateInterval() {
-            updateTotalInterval = setInterval(updateTotal, 5000);
+            updateTotalInterval = setInterval(updateTotal, 60000);
         }
 
         function stopUpdateInterval() {

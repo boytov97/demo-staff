@@ -57,18 +57,25 @@ class HoursController extends ControllerBase
             }
         }
 
+        $datesMonth = $this->getDates($this->month, $this->year);
+
         if(count($users)) {
             $this->view->lastStartTime = $lastStartTime;
             $this->view->users = $users;
             $this->view->currentDate = $currentDate;
-            $this->view->datesMonth = $this->getDates($this->month, $this->year);
+            $this->view->datesMonth = $datesMonth;
         }
 
         $this->view->authUser = $this->identity;
-        $this->view->years = $this->getYears();
-        $this->view->months = $this->getMonth();
+        $this->view->years = $this->dateTime->getYears();
+        $this->view->months = $this->dateTime->getMonths();
         $this->view->defaultYear = $this->year;
         $this->view->defaultMonth = $this->month;
+        $this->view->workingDaysCount = $this->getWorkingDaysCount($datesMonth);
+        $this->view->totalPerMonth = $this->getTotalPerMonth($this->month, $this->year);
+
+
+        $this->view->percentOfTotal = $this->getPercentOfTotal($this->getWorkingDaysCount($datesMonth), $this->getTotalPerMonth($this->month, $this->year));
     }
 
     public function updateAction($id, $startEndId)
@@ -121,7 +128,7 @@ class HoursController extends ControllerBase
                 $hour = Hours::findFirst($id);
 
                 $hour->assign([
-                    'total' => $this->getTotal($firstStartEnd->start)
+                    'total' => $this->dateTime->getDifference($firstStartEnd->start)
                 ]);
 
                 $hour->save();
@@ -131,7 +138,7 @@ class HoursController extends ControllerBase
                         'urlForNewStartEnd' => $urlForNewStartEnd,
                         'action' => $this->request->getPost('action'),
                         'startEnds' => $hour->startEnds,
-                        'total' => $this->getTotal($firstStartEnd->start)
+                        'total' => $this->dateTime->getDifference($firstStartEnd->start)
                     ]));
 
                 return $response;
@@ -150,7 +157,7 @@ class HoursController extends ControllerBase
 
         $hour = Hours::findFirst($id);
         $hour->assign([
-            'total' => $this->getTotal($firstStartEnd->start)
+            'total' => $this->dateTime->getDifference($firstStartEnd->start)
         ]);
 
         $hour->save();
@@ -159,7 +166,7 @@ class HoursController extends ControllerBase
 
         $response->setStatusCode(200, 'OK');
         $response->setContent(json_encode([
-            'total' => $this->getTotal($firstStartEnd->start)
+            'total' => $this->dateTime->getDifference($firstStartEnd->start)
         ]));
 
         return $response;
@@ -209,57 +216,72 @@ class HoursController extends ControllerBase
         return $hour;
     }
 
+    /**
+     *
+     *
+     * @param $month
+     * @param $year
+     * @return mixed
+     */
     protected function getDates($month, $year)
     {
-        $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $month, $year);
-        $datesMonth = [];
+        $items = NotWorkingDays::find([
+            'conditions' => 'month = :month:',
+            'bind'       => [
+                'month' => $month,
+            ]
+        ]);
 
-        for ($i = 1; $i <= $daysInMonth; $i++)  {
-            $mktime = mktime(0,0,0, $month, $i, $year);
-
-            $datesMonth[$i] = [
-                'day'  => date("l", $mktime),
-                'date' => date('Y-m-d', $mktime)
-            ];
-        }
-
-        return $datesMonth;
+        return $this->dateTime->getDates($month, $year, $items);
     }
 
-    protected function getTotal($start)
+    /**
+     *
+     *
+     * @param $datesMonth
+     * @return int
+     */
+    protected function getWorkingDaysCount($datesMonth)
     {
-        $strStart = date('Y-m-d') . ' ' . $start;
-        $strEnd = date('Y-m-d H:i:s');
+        $workingDaysCount = 0;
 
-        $dteStart = new DateTime($strStart);
-        $dteEnd   = new DateTime($strEnd);
-
-        $dteDiff  = $dteStart->diff($dteEnd);
-
-        return $dteDiff->format("%H:%I:%S");
-    }
-
-    protected function getYears()
-    {
-        $years = [];
-
-        for ($i = 10; $i >= 0; $i--) {
-            $string = date('Y') . ' -' . $i . ' year';
-
-            $years[date('Y', strtotime($string))] = date('Y', strtotime($string));
+        foreach ($datesMonth as $dateMonth) {
+            if($dateMonth['working_day']) {
+                $workingDaysCount++;
+            }
         }
 
-        return $years;
+        return $workingDaysCount;
     }
 
-    protected function getMonth()
+    protected function getTotalPerMonth($month, $year)
     {
-        $months = [];
+        $createdAt = $year . '-' . $month . '%';
 
-        for ($month = 1; $month <= 12; $month++) {
-            $months[$month] = date('F', mktime(0,0,0, $month, 1, date('Y')));
-        }
+        $hours = Hours::find([
+            'conditions' => 'createdAt LIKE :createdAt: AND usersId = :id:',
+            'bind'       => [
+                'createdAt' => $createdAt,
+                'id' => $this->identity['id']
+            ]
+        ])->toArray();
 
-        return $months;
+        $totalPerMonthTimeStamp = $this->dateTime->getTotalTimeStampOfHours($hours);
+
+        $hour = round($totalPerMonthTimeStamp / 60 / 60);
+        $minute = ($totalPerMonthTimeStamp / 60) % 60;
+        $second = $totalPerMonthTimeStamp % 60;
+
+        return $hour . ':' . $minute . ':' . $second;
+    }
+
+    protected function getPercentOfTotal($workingDaysCount, $totalPerMonth)
+    {
+        $workingHoursCount = $workingDaysCount * 8 * 60 * 60;
+        $totalPerMonthTimeStamp = strtotime($totalPerMonth);
+
+        return date('H:i:s', 226800);
+
+        /*return round(($totalPerMonthTimeStamp - strtotime("00:00:00")) / ($workingHoursCount / 100), 2);*/
     }
 }
