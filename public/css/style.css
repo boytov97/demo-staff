@@ -7,6 +7,10 @@ a {
     text-decoration: none;
 }
 
+body {
+    background-color: #FDFFE1;
+}
+
 .form__wrapper {
     width: 500px;
     margin: 40px auto;
@@ -29,6 +33,11 @@ a {
     border: 1px solid #1c7430;
     color: #1c7430;
     font-weight: 500;
+}
+
+.working_table_list {
+    height: 700px;
+    overflow-y: scroll;
 }
 
 .current_working_line {
@@ -67,6 +76,47 @@ a {
     width: 100%;
     text-align: center;
     margin-top: 30px;
+}
+
+.year-month__wrapper {
+    display: inline-block;
+    margin: 0 10px;
+}
+
+.statistics__wrapper {
+    width: 100%;
+    margin-top: 30px;
+}
+
+.user_statistics__wrapper span {
+    display: inline-block;
+    font-weight: 600;
+    margin-top: 5px;
+}
+
+.lates_statistics__wrapper {
+    text-align: center;
+    padding-top: 30px;
+}
+
+.late__image__wrapper {
+    border-radius: 50%;
+    width: 75px;
+    height: 70px;
+    overflow: hidden;
+    margin: 0 auto;
+}
+
+.late__image {
+    width: 70px;
+}
+
+.late__card {
+    width: 90px;
+    display: inline-block;
+    margin: 0 5px 5px 5px;
+    background: #FDEFE1;
+    text-align: center;
 }
 
 @media screen and (max-width: 430px) {

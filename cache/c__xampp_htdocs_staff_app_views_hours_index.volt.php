@@ -56,20 +56,20 @@
         </div>
 
         <div class="year-month_selector">
-            <form action="{{ url(['for': 'hours-index']) }}" method="GET">
+            <form action="<?= $this->url->get(['for' => 'hours-index']) ?>" method="GET">
                 <div class="year-month__wrapper">
                     <select name="month" id="" onchange="this.form.submit();">
-                        {% for key, month in months %}
-                            <option value="{{ key }}" {{ (key == defaultMonth) ? 'selected' : '' }}>{{ month }}</option>
-                        {% endfor %}
+                        <?php foreach ($months as $key => $month) { ?>
+                            <option value="<?= $key ?>" <?= (($key == $defaultMonth) ? 'selected' : '') ?>><?= $month ?></option>
+                        <?php } ?>
                     </select>
                 </div>
 
                 <div class="year-month__wrapper">
                     <select name="year" id="" onchange="this.form.submit();">
-                        {% for key, year in years %}
-                            <option value="{{ key }}" {{ (year === defaultYear) ? 'selected' : '' }}>{{ year }}</option>
-                        {% endfor %}
+                        <?php foreach ($years as $key => $year) { ?>
+                            <option value="<?= $key ?>" <?= (($year === $defaultYear) ? 'selected' : '') ?>><?= $year ?></option>
+                        <?php } ?>
                     </select>
                 </div>
             </form>
@@ -77,92 +77,86 @@
 
         <div class="table__wrapper">
             <table class="table table-bordered">
-             {% if users is defined %}
+             <?php if (isset($users)) { ?>
                   <thead>
                     <tr>
                       <th scope="col" style="width: 200px;">
                         <a href="#" id="hide-show">Hide/Show</a>
                       </th>
-                        {% for user in users %}
-                             <th scope="col">{{ user.name }}</th>
-                        {% endfor %}
+                        <?php foreach ($users as $user) { ?>
+                             <th scope="col"><?= $user->name ?></th>
+                        <?php } ?>
                     </tr>
                   </thead>
 
                   <tbody class="working_table_list">
-                      {% for position, date in datesMonth %}
-                          <tr class="{{ (currentDate == date['date']) ? 'current_working_line' : 'full_day not_current_working_line' }}">
+                      <?php foreach ($datesMonth as $position => $date) { ?>
+                          <tr class="<?= (($currentDate == $date['date']) ? 'current_working_line' : 'full_day not_current_working_line') ?>">
                               <td scope="row">
                                   <center>
-                                      {{ position }} <br>
-                                      <span class="day_of_weeks">{{ date['day'] }}</span>
+                                      <?= $position ?> <br>
+                                      <span class="day_of_weeks"><?= $date['day'] ?></span>
                                   </center>
                               </td>
 
-                              {% for user in users %}
+                              <?php foreach ($users as $user) { ?>
                                   <td>
                                       <div class="hours__wrapper">
                                           <input type="checkbox" disabled checked>
 
-                                          {% for hour in user.hours %}
-                                                {% if hour.createdAt == date['date'] %}
-                                                    {% if user.id == authUser['id'] and currentDate === date['date'] %}
-                                                          <input type="hidden" id="update-hours-link" value="{{ url(['for': 'hours-update-total', 'id': hour.id ]) }}">
+                                          <?php foreach ($user->hours as $hour) { ?>
+                                                <?php if ($hour->createdAt == $date['date']) { ?>
+                                                    <?php if ($user->id == $authUser['id'] && $currentDate === $date['date']) { ?>
+                                                          <input type="hidden" id="update-hours-link" value="<?= $this->url->get(['for' => 'hours-update-total', 'id' => $hour->id]) ?>">
 
-                                                          {% for startEnd in hour.startEnds %}
-                                                              {% set endStop = startEnd.end ? startEnd.end :
-                                                              '<a href="' ~
-                                                              url(['for': 'hours-update', 'id': hour.id, 'startEndId': startEnd.id ])
-                                                              ~ '" name="stop" class="update-hours">stop</a>' %}
+                                                          <?php foreach ($hour->startEnds as $startEnd) { ?>
+                                                              <?php $endStop = ($startEnd->end ? $startEnd->end : '<a href="' . $this->url->get(['for' => 'hours-update', 'id' => $hour->id, 'startEndId' => $startEnd->id]) . '" name="stop" class="update-hours">stop</a>'); ?>
 
                                                               <center>
-                                                                  <span class="start-end_{{ startEnd.id }}">{{ startEnd.start ? startEnd.start ~ ' - ' ~ endStop :
-                                                                      '<a href="' ~
-                                                                      url(['for': 'hours-update', 'id': hour.id, 'startEndId': startEnd.id ])
-                                                                      ~ '" name="start" class="update-hours">start</a>' }}
+                                                                  <span class="start-end_<?= $startEnd->id ?>"><?= ($startEnd->start ? $startEnd->start . ' - ' . $endStop : '<a href="' . $this->url->get(['for' => 'hours-update', 'id' => $hour->id, 'startEndId' => $startEnd->id]) . '" name="start" class="update-hours">start</a>') ?>
                                                                   </span>
                                                               </center>
-                                                          {% endfor %}
+                                                          <?php } ?>
 
                                                           <center>
                                                               <span class="total-hour auth-user-total">
-                                                                  {% if hour.total is not empty %}
-                                                                      total: {{ hour.total }}
-                                                                  {% endif %}
+                                                                  <?php if (!empty($hour->total)) { ?>
+                                                                      total: <?= $hour->total ?>
+                                                                  <?php } ?>
                                                               </span>
 
-                                                              {% if hour.less is not empty %}
-                                                                  <span class="less-hour">less: {{ hour.less }}</span>
-                                                              {% endif %}
+                                                              <?php if (!empty($hour->less)) { ?>
+                                                                  <span class="less-hour">less: <?= $hour->less ?></span>
+                                                              <?php } ?>
                                                           </center>
-                                                    {% elseif currentDate !== date['date'] %}
-                                                          {% for startEnd in hour.startEnds %}
-                                                              <center>{{ startEnd.start }} - {{ startEnd.end }}</center>
-                                                          {% endfor %}
+                                                    <?php } elseif ($currentDate !== $date['date']) { ?>
+                                                          <?php foreach ($hour->startEnds as $startEnd) { ?>
+                                                              <center><?= $startEnd->start ?> - <?= $startEnd->end ?></center>
+                                                          <?php } ?>
                                                           <center>
-                                                              {% if hour.total is not empty %}
-                                                                  <span class="total-hour">total: {{ hour.total }}</span>
-                                                              {% endif %}
+                                                              <?php if (!empty($hour->total)) { ?>
+                                                                  <span class="total-hour">total: <?= $hour->total ?></span>
+                                                              <?php } ?>
 
-                                                              {% if hour.less is not empty %}
+                                                              <?php if (!empty($hour->less)) { ?>
                                                                   <br>
-                                                                  <span class="less-hour">less: {{ hour.less }}</span>
-                                                              {% endif %}
+                                                                  <span class="less-hour">less: <?= $hour->less ?></span>
+                                                              <?php } ?>
                                                           </center>
-                                                    {% endif %}
-                                                 {% endif %}
-                                          {% endfor %}
+                                                    <?php } ?>
+                                                 <?php } ?>
+                                          <?php } ?>
                                       </div>
                                   </td>
-                              {% endfor %}
+                              <?php } ?>
                           </tr>
-                      {% endfor %}
+                      <?php } ?>
                   </tbody>
                 </table>
-             {% else %}
+             <?php } else { ?>
                  <hr>
                  <p>No users</p>
-             {% endif %}
+             <?php } ?>
         </div>
     </div>
 </div>
@@ -285,8 +279,8 @@
         initializeStartAndStop();
         startUpdateInterval();
 
-        {% if lastStartTime is empty %}
+        <?php if (empty($lastStartTime)) { ?>
             stopUpdateInterval();
-        {% endif %}
+        <?php } ?>
     });
 </script>

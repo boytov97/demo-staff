@@ -70,4 +70,12 @@ $router->addPost(
     ]
 )->setName('hours-update-total');
 
+$router->add(
+    '/hours/index/',
+    [
+        'controller' => 'hours',
+        'action'     => 'index',
+    ]
+)->setName('hours-index');
+
 return $router;
