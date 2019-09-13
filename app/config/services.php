@@ -103,6 +103,13 @@ $di->set('auth', function () {
 });
 
 /**
+ * Custom authentication component
+ */
+$di->set('dateTime', function () {
+    return new CustomDateTime();
+});
+
+/**
  * Mail service uses AmazonSES
  */
 $di->set('mail', function () {

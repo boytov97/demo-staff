@@ -19,6 +19,20 @@ INSERT INTO `profiles` (`id`, `name`) VALUES
 (3, 'guest');
 
 --
+-- Table structure for table `permissions`
+--
+
+DROP TABLE IF EXISTS `permissions`;
+CREATE TABLE IF NOT EXISTS `permissions` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `profilesId` int(10) unsigned NOT NULL,
+  `resource` varchar(16) NOT NULL,
+  `action` varchar(16) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `profilesId` (`profilesId`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=23 ;
+
+--
 -- Table structure for table `users`
 --
 
@@ -101,3 +115,16 @@ CREATE TABLE IF NOT EXISTS `start_end` (
 PRIMARY KEY (`id`),
 KEY `hourId` (`hourId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+--
+-- Table structure for table `not_working_days`
+--
+
+DROP TABLE IF EXISTS `not_working_days`;
+CREATE TABLE IF NOT EXISTS `not_working_days` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `month` int(2) NOT NULL,
+  `day` int(2) NOT NULL,
+  `repeat` ENUM('Y', 'N') DEFAULT 'Y',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
