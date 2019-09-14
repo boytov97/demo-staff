@@ -4,13 +4,21 @@ use Phalcon\Http\Response;
 
 class HoursController extends ControllerBase
 {
+    public $hourForDay = 9;
+
+    public $beginning = '09:00:00';
+
     protected $month;
 
     protected $year;
 
+    protected $settings;
+
     public function initialize()
     {
         $this->view->setTemplateBefore('protected');
+        $this->settings = new Settings();
+        $this->beginning = $this->settings->getByKey('beginning');
         return parent::initialize();
     }
 
@@ -55,7 +63,7 @@ class HoursController extends ControllerBase
         }
 
         $datesMonth = $this->dateTime->getDates($this->month, $this->year, $this->getNotWorkingDays($this->month));
-        $totalPerMonthTimeStamp = $this->getTotalPerMonthTimeStamp($this->month, $this->year);
+        $totalSecondPerMonth = $this->getTotalSecondPerMonth($this->month, $this->year);
         $workingDaysCount = $this->getWorkingDaysCount($datesMonth);
 
         if(count($users)) {
@@ -70,9 +78,9 @@ class HoursController extends ControllerBase
         $this->view->months = $this->dateTime->getMonths();
         $this->view->defaultYear = $this->year;
         $this->view->defaultMonth = $this->month;
-        $this->view->workingDaysCount = $workingDaysCount;
-        $this->view->totalPerMonth = $this->getTotalPerMonth($totalPerMonthTimeStamp);
-        $this->view->percentOfTotal = $this->getPercentOfTotal($workingDaysCount, $totalPerMonthTimeStamp);
+        $this->view->workingHoursCount = $workingDaysCount * ($this->hourForDay - 1);
+        $this->view->totalPerMonth = $this->getTotalPerMonth($totalSecondPerMonth);
+        $this->view->percentOfTotal = $this->getPercentOfTotal($workingDaysCount, $totalSecondPerMonth);
     }
 
     public function updateAction($id, $startEndId)
@@ -271,7 +279,7 @@ class HoursController extends ControllerBase
      * @param $year
      * @return mixed
      */
-    protected function getTotalPerMonthTimeStamp($month, $year)
+    protected function getTotalSecondPerMonth($month, $year)
     {
         $createdAt = $year . '-' . $month . '%';
 
@@ -283,20 +291,20 @@ class HoursController extends ControllerBase
             ]
         ])->toArray();
 
-        return $this->dateTime->getTotalTimeStampOfHours($hours);
+        return $this->dateTime->getTotalSecondOfHours($hours, $this->beginning);
     }
 
     /**
      * Возвращает сумму отработанных часов
      *
-     * @param $totalPerMonthTimeStamp
+     * @param $totalSecondPerMonth
      * @return string
      */
-    protected function getTotalPerMonth($totalPerMonthTimeStamp)
+    protected function getTotalPerMonth($totalSecondPerMonth)
     {
-        $hour = round($totalPerMonthTimeStamp / 60 / 60);
-        $minute = ($totalPerMonthTimeStamp / 60) % 60;
-        $second = $totalPerMonthTimeStamp % 60;
+        $hour = round($totalSecondPerMonth / 60 / 60);
+        $minute = ($totalSecondPerMonth / 60) % 60;
+        $second = $totalSecondPerMonth % 60;
 
         return $hour . ':' . $minute . ':' . $second;
     }
@@ -305,13 +313,13 @@ class HoursController extends ControllerBase
      * Возвращает процент отработанных часов
      *
      * @param $workingDaysCount
-     * @param $totalPerMonthTimeStamp
+     * @param $totalSecondPerMonth
      * @return float
      */
-    protected function getPercentOfTotal($workingDaysCount, $totalPerMonthTimeStamp)
+    protected function getPercentOfTotal($workingDaysCount, $totalSecondPerMonth)
     {
-        $workingSecondsCount = $workingDaysCount * 8 * 60 * 60;
+        $workingSecondsCount = $workingDaysCount * ($this->hourForDay - 1) * 60 * 60;
 
-        return round($totalPerMonthTimeStamp / ($workingSecondsCount / 100), 2);
+        return round($totalSecondPerMonth / ($workingSecondsCount / 100), 2);
     }
 }

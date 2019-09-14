@@ -110,18 +110,36 @@ class CustomDateTime extends Component
      *
      *
      * @param $hours
+     * @param $beginning
      * @return false|int
      */
-    public function getTotalTimeStampOfHours($hours)
+    public function getTotalSecondOfHours($hours, $beginning)
     {
-        $totalPerMonthTimeStamp = 0;
+        $totalSecondPerMonth = 0;
 
         foreach($hours as $hour) {
             if($hour['total']) {
-                $totalPerMonthTimeStamp = $totalPerMonthTimeStamp + (strtotime($hour['total']) - strtotime("00:00:00"));
+                $totalSecondPerMonth = $totalSecondPerMonth + (strtotime($hour['total']) - strtotime("00:00:00"));
             }
         }
 
-        return $totalPerMonthTimeStamp;
+        $secondBeforeLunch = 46800 - (strtotime($beginning) - strtotime("00:00:00"));
+
+        if ($totalSecondPerMonth && $totalSecondPerMonth > $secondBeforeLunch) {
+            $totalSecondPerMonth = $totalSecondPerMonth - 3600;
+        }
+
+        return $totalSecondPerMonth;
+    }
+
+    /**
+     *
+     *
+     * @param $hour
+     * @return false|int
+     */
+    public function parserHour($hour)
+    {
+        return strtotime($hour) - strtotime('00:00:00');
     }
 }

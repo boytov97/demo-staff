@@ -4,7 +4,7 @@
             <div class="col-md-6 user_statistics__wrapper">
                 <p>Total hours per month: <span class="total_hours_per_month">{{ totalPerMonth }}</span></p>
                 <p>You have/Assigned: <span class="total_hours_per_month">{{ percentOfTotal }}%</span></p>
-                <p>Assigned: <span class="total_hours_per_month">{{ workingDaysCount * 8 }}</span></p>
+                <p>Assigned: <span class="total_hours_per_month">{{ workingHoursCount }}</span></p>
                 <span>Ты опаздал: <span class="total_hours_per_month">1 раз</span></span><br>
                 <span>Если общее кол-во опозданий превысит в сентябре.</span><br>
                 <span>В сентябре будут применятся штрафные санкции.</span>
