@@ -69,7 +69,7 @@ class Users extends \Phalcon\Mvc\Model
     public function initialize()
     {
         $this->setSchema("staff");
-        $this->setSource("Users");
+        $this->setSource("users");
 
         $this->belongsTo('profilesId', 'Profiles', 'id', [
             'alias' => 'profile',
@@ -98,7 +98,7 @@ class Users extends \Phalcon\Mvc\Model
      */
     public function getSource()
     {
-        return 'Users';
+        return 'users';
     }
 
     /**
