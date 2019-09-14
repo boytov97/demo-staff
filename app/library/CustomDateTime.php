@@ -14,12 +14,11 @@ class CustomDateTime extends Component
         $months = [];
 
         for ($month = 1; $month <= 12; $month++) {
-            $months[$month] = date('F', mktime(0,0,0, $month, 1, date('Y')));
+            $months[date('m', mktime(0,0,0, $month, 1, date('Y')))] = date('F', mktime(0,0,0, $month, 1, date('Y')));
         }
 
         return $months;
     }
-
 
     /**
      *
@@ -40,7 +39,6 @@ class CustomDateTime extends Component
     }
 
     /**
-     *
      *
      *
      * @param $month
@@ -65,11 +63,28 @@ class CustomDateTime extends Component
             $datesMonth[$i] = [
                 'day'  => date("l", $mktime),
                 'date' => date('Y-m-d', $mktime),
-                'working_day' => (in_array(date("N", $mktime), [6, 7]) || in_array(date("j", $mktime), $notWorkingDays) ) ? 0 : 1
+                'working_day' => (in_array(date("N", $mktime), [7]) || in_array(date("j", $mktime), $notWorkingDays) ) ? 0 : 1
             ];
         }
 
         return $datesMonth;
+    }
+
+    /**
+     *
+     *
+     * @param $currentDate
+     * @param $items
+     * @return bool
+     */
+    public function isNotWorkingDay($currentDate, $items)
+    {
+        $notWorkingDays = [];
+        foreach ($items as $notWorkingDay) {
+            $notWorkingDays[] = $notWorkingDay->day;
+        }
+
+        return (in_array(date("N", strtotime($currentDate)), [7]) || in_array(date("j", strtotime($currentDate)), $notWorkingDays) ) ? true : false;
     }
 
     /**
@@ -91,6 +106,12 @@ class CustomDateTime extends Component
         return $dteDiff->format("%H:%I:%S");
     }
 
+    /**
+     *
+     *
+     * @param $hours
+     * @return false|int
+     */
     public function getTotalTimeStampOfHours($hours)
     {
         $totalPerMonthTimeStamp = 0;

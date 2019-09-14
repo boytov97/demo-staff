@@ -21,7 +21,7 @@ class Profiles extends \Phalcon\Mvc\Model
     public function initialize()
     {
         $this->setSchema("staff");
-        $this->setSource("Profiles");
+        $this->setSource("profiles");
 
         $this->hasMany('id', 'Users', 'profilesId', [
             'alias' => 'users',
@@ -38,7 +38,7 @@ class Profiles extends \Phalcon\Mvc\Model
      */
     public function getSource()
     {
-        return 'Profiles';
+        return 'profiles';
     }
 
     /**
