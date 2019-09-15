@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS `reset_passwords` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
--- Table structure for table `clocks`
+-- Table structure for table `hours`
 --
 
 DROP TABLE IF EXISTS `hours`;
@@ -98,12 +98,15 @@ CREATE TABLE IF NOT EXISTS `hours` (
 `usersId` int(10) unsigned NOT NULL,
 `total` time DEFAULT NULL,
 `less` time DEFAULT NULL,
+`late` ENUM('Y', 'N') DEFAULT 'Y',
+`forgot` ENUM('Y', 'N') DEFAULT 'N',
 `createdAt` date NOT NULL,
 PRIMARY KEY (`id`),
 KEY `usersId` (`usersId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
--- Table structure for table `clocks`
+--
+-- Table structure for table `start_end`
 --
 
 DROP TABLE IF EXISTS `start_end`;
@@ -126,5 +129,17 @@ CREATE TABLE IF NOT EXISTS `not_working_days` (
   `month` int(2) NOT NULL,
   `day` int(2) NOT NULL,
   `repeat` ENUM('Y', 'N') DEFAULT 'Y',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+--
+-- Table structure for table `settings`
+--
+
+DROP TABLE IF EXISTS `settings`;
+CREATE TABLE IF NOT EXISTS `settings` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `key` varchar(255) NOT NULL,
+  `value` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

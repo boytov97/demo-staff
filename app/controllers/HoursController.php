@@ -4,13 +4,21 @@ use Phalcon\Http\Response;
 
 class HoursController extends ControllerBase
 {
+    public $hourForDay = 9;
+
+    public $beginning = '09:00:00';
+
     protected $month;
 
     protected $year;
 
+    protected $settings;
+
     public function initialize()
     {
         $this->view->setTemplateBefore('protected');
+        $this->settings = new Settings();
+        $this->beginning = $this->settings->getByKey('beginning');
         return parent::initialize();
     }
 
@@ -55,7 +63,7 @@ class HoursController extends ControllerBase
         }
 
         $datesMonth = $this->dateTime->getDates($this->month, $this->year, $this->getNotWorkingDays($this->month));
-        $totalPerMonthTimeStamp = $this->getTotalPerMonthTimeStamp($this->month, $this->year);
+        $totalSecondPerMonth = $this->getTotalSecondPerMonth($this->month, $this->year);
         $workingDaysCount = $this->getWorkingDaysCount($datesMonth);
 
         if(count($users)) {
@@ -70,9 +78,12 @@ class HoursController extends ControllerBase
         $this->view->months = $this->dateTime->getMonths();
         $this->view->defaultYear = $this->year;
         $this->view->defaultMonth = $this->month;
-        $this->view->workingDaysCount = $workingDaysCount;
-        $this->view->totalPerMonth = $this->getTotalPerMonth($totalPerMonthTimeStamp);
-        $this->view->percentOfTotal = $this->getPercentOfTotal($workingDaysCount, $totalPerMonthTimeStamp);
+        $this->view->workingHoursCount = $workingDaysCount * ($this->hourForDay - 1);
+        $this->view->totalPerMonth = $this->getTotalPerMonth($totalSecondPerMonth);
+        $this->view->percentOfTotal = $this->getPercentOfTotal($workingDaysCount, $totalSecondPerMonth);
+        $this->view->authUserlateCount = $this->getAuthUserLateCount($this->month, $this->year);
+        $this->view->lateCountPerMonth = $this->getLateCountPerMonth($this->month, $this->year);
+        $this->view->maxLate = $this->settings->getByKey('max_late');
     }
 
     public function updateAction($id, $startEndId)
@@ -80,12 +91,38 @@ class HoursController extends ControllerBase
         if($this->request->isPost()) {
             $hour = Hours::findFirst($id);
 
+            $firstStartEnd = StartEnd::findFirst([
+                'conditions' => 'hourId = :hourId:',
+                'bind' => [
+                    'hourId' => $id,
+                ],
+            ]);
+
             $message = [];
             $total = null;
             $updateUrl = null;
+            $entity = [];
 
             if($this->request->getPost('action') == 'start') {
-                $message = $this->storeStartTime($startEndId);
+
+                if(!$firstStartEnd->start) {
+                    if (strtotime($this->beginning) < strtotime('now')) {
+                        $entity['late'] = 'Y';
+                    }
+                }
+
+                $startEnd = StartEnd::findFirst($startEndId);
+
+                $startEnd->assign([
+                    'start' => date('H:i:s')
+                ]);
+
+                if(!$startEnd->save()) {
+                    $message = $startEnd->getMessages();
+                } else {
+
+                    $entity['less'] = null;
+                }
             }
 
             if($this->request->getPost('action') == 'stop') {
@@ -108,22 +145,19 @@ class HoursController extends ControllerBase
 
                 $updateUrl = $this->url->get(['for' => 'hours-update', 'id' => $id, 'startEndId' => $newStartEnd->id]);
 
-                $firstStartEnd = StartEnd::findFirst([
-                    'conditions' => 'hourId = :hourId:',
-                    'bind' => [
-                        'hourId' => $id,
-                    ],
-                ]);
-
                 $total = $this->dateTime->getDifference($firstStartEnd->start);
 
-                $hour->assign([
-                    'total' => $total
-                ]);
+                $less  = (( $this->hourForDay * 3600 ) > $this->dateTime->parseHour($total)) ?
+                    $this->dateTime->getDiffBySecond($this->hourForDay * 3600, $this->dateTime->parseHour($total)) : null;
 
-                if(!$hour->save()) {
-                    $message = $hour->getMessages();
-                }
+                $entity['total'] = $total;
+                $entity['less'] = $less;
+            }
+
+            $hour->assign($entity);
+
+            if(!$hour->save()) {
+                $message = $hour->getMessages();
             }
 
             $response = new Response();
@@ -138,7 +172,8 @@ class HoursController extends ControllerBase
                         'updateUrl' => $updateUrl,
                         'action' => $this->request->getPost('action'),
                         'startEnds' => $hour->startEnds,
-                        'total' => $total
+                        'total' => $total,
+                        'less'  => $less
                     ]));
             }
 
@@ -175,19 +210,6 @@ class HoursController extends ControllerBase
         }
 
         return $response;
-    }
-
-    protected function storeStartTime($startEndId)
-    {
-        $startEnd = StartEnd::findFirst($startEndId);
-
-        $startEnd->assign([
-            'start' => date('H:i:s')
-        ]);
-
-        if(!$startEnd->save()) {
-            return $this->flash->error($startEnd->getMessages());
-        }
     }
 
     /**
@@ -271,7 +293,7 @@ class HoursController extends ControllerBase
      * @param $year
      * @return mixed
      */
-    protected function getTotalPerMonthTimeStamp($month, $year)
+    protected function getTotalSecondPerMonth($month, $year)
     {
         $createdAt = $year . '-' . $month . '%';
 
@@ -283,20 +305,20 @@ class HoursController extends ControllerBase
             ]
         ])->toArray();
 
-        return $this->dateTime->getTotalTimeStampOfHours($hours);
+        return $this->dateTime->getTotalSecondOfHours($hours);
     }
 
     /**
      * Возвращает сумму отработанных часов
      *
-     * @param $totalPerMonthTimeStamp
+     * @param $totalSecondPerMonth
      * @return string
      */
-    protected function getTotalPerMonth($totalPerMonthTimeStamp)
+    protected function getTotalPerMonth($totalSecondPerMonth)
     {
-        $hour = round($totalPerMonthTimeStamp / 60 / 60);
-        $minute = ($totalPerMonthTimeStamp / 60) % 60;
-        $second = $totalPerMonthTimeStamp % 60;
+        $hour = round($totalSecondPerMonth / 60 / 60);
+        $minute = ($totalSecondPerMonth / 60) % 60;
+        $second = $totalSecondPerMonth % 60;
 
         return $hour . ':' . $minute . ':' . $second;
     }
@@ -305,13 +327,51 @@ class HoursController extends ControllerBase
      * Возвращает процент отработанных часов
      *
      * @param $workingDaysCount
-     * @param $totalPerMonthTimeStamp
+     * @param $totalSecondPerMonth
      * @return float
      */
-    protected function getPercentOfTotal($workingDaysCount, $totalPerMonthTimeStamp)
+    protected function getPercentOfTotal($workingDaysCount, $totalSecondPerMonth)
     {
-        $workingSecondsCount = $workingDaysCount * 8 * 60 * 60;
+        $workingSecondsCount = $workingDaysCount * ($this->hourForDay - 1) * 60 * 60;
 
-        return round($totalPerMonthTimeStamp / ($workingSecondsCount / 100), 2);
+        return round($totalSecondPerMonth / ($workingSecondsCount / 100), 2);
+    }
+
+    /**
+     *
+     *
+     * @param $month
+     * @param $year
+     * @return mixed
+     */
+    protected function getLateCountPerMonth($month, $year)
+    {
+        $createdAt = $year . '-' . $month . '%';
+
+        $lateCountPerMonth = Hours::find([
+            'conditions' => 'createdAt LIKE :createdAt: AND late = :late:',
+            'bind'       => [
+                'createdAt' => $createdAt,
+                'late' => 'Y'
+            ]
+        ])->count();
+
+        return $lateCountPerMonth;
+    }
+
+    protected function getAuthUserLateCount($month, $year)
+    {
+        $createdAt = $year . '-' . $month . '%';
+
+        $authUserlateCount = Hours::find([
+            'conditions' => 'createdAt LIKE :createdAt: AND usersId = :id: AND late = :late:',
+            'bind'       => [
+                'createdAt' => $createdAt,
+                'id' => $this->identity['id'],
+                'late' => 'Y'
+            ]
+        ])->count();
+
+        return $authUserlateCount;
     }
 }

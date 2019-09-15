@@ -4,10 +4,14 @@
             <div class="col-md-6 user_statistics__wrapper">
                 <p>Total hours per month: <span class="total_hours_per_month">{{ totalPerMonth }}</span></p>
                 <p>You have/Assigned: <span class="total_hours_per_month">{{ percentOfTotal }}%</span></p>
-                <p>Assigned: <span class="total_hours_per_month">{{ workingDaysCount * 8 }}</span></p>
-                <span>Ты опаздал: <span class="total_hours_per_month">1 раз</span></span><br>
-                <span>Если общее кол-во опозданий превысит в сентябре.</span><br>
-                <span>В сентябре будут применятся штрафные санкции.</span>
+                <p>Assigned: <span class="total_hours_per_month">{{ workingHoursCount }}</span></p>
+                <span>Ты опаздал: {{ authUserlateCount }} раз</span><br>
+                <span>Если общее кол-во опозданий превысит {{ maxLate }}.</span><br>
+                <span>Будут применятся штрафные санкции.</span>
+
+                <div class="scale_max_late">
+                    <div style="width: {{ lateCountPerMonth * maxLate / 100 }}%;" class="late_count_scale">{{ lateCountPerMonth }}</div>
+                </div>
             </div>
 
             <div class="col-md-6 lates_statistics__wrapper">
@@ -132,9 +136,11 @@
                                                                       {% endif %}
                                                                   </span>
 
-                                                                  {% if hour.less is not empty %}
-                                                                      <span class="less-hour">less: {{ hour.less }}</span>
-                                                                  {% endif %}
+                                                                  <span class="less-hour auth-user-less">
+                                                                      {% if hour.less is not empty %}
+                                                                          less: {{ hour.less }}
+                                                                      {% endif %}
+                                                                  </span>
                                                               </center>
                                                         {% elseif currentDate !== date['date'] %}
                                                               {% for startEnd in hour.startEnds %}
@@ -146,7 +152,6 @@
                                                                   {% endif %}
 
                                                                   {% if hour.less is not empty %}
-                                                                      <br>
                                                                       <span class="less-hour">less: {{ hour.less }}</span>
                                                                   {% endif %}
                                                               </center>
@@ -199,6 +204,7 @@
                     updateActions['action'] = 'start';
 
                     startUpdateInterval();
+                    $('.auth-user-less').html('');
                 }
 
                 if(element.attr('name') === 'stop') {
@@ -246,6 +252,10 @@
 
                         if (parsedData.total) {
                             $('.auth-user-total').html('total: ' + parsedData.total);
+                        }
+
+                        if (parsedData.less) {
+                            $('.auth-user-less').html('less: ' + parsedData.less);
                         }
                     });
 
