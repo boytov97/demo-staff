@@ -19,13 +19,19 @@ class Hours extends \Phalcon\Mvc\Model
      *
      * @var string
      */
-    public $start;
+    public $total;
 
     /**
      *
      * @var string
      */
-    public $end;
+    public $less;
+
+    /**
+     *
+     * @var string
+     */
+    public $late;
 
     /**
      *

@@ -25,7 +25,7 @@ class StartEnd extends \Phalcon\Mvc\Model
      *
      * @var string
      */
-    public $end;
+    public $stop;
 
     /**
      * Initialize method for model.
