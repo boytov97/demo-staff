@@ -63,7 +63,7 @@ class CustomDateTime extends Component
             $datesMonth[$i] = [
                 'day'  => date("l", $mktime),
                 'date' => date('Y-m-d', $mktime),
-                'working_day' => (in_array(date("N", $mktime), [7]) || in_array(date("j", $mktime), $notWorkingDays) ) ? 0 : 1
+                'working_day' => (in_array(date("N", $mktime), []) || in_array(date("j", $mktime), $notWorkingDays) ) ? 0 : 1
             ];
         }
 
@@ -84,19 +84,20 @@ class CustomDateTime extends Component
             $notWorkingDays[] = $notWorkingDay->day;
         }
 
-        return (in_array(date("N", strtotime($currentDate)), [7]) || in_array(date("j", strtotime($currentDate)), $notWorkingDays) ) ? true : false;
+        return (in_array(date("N", strtotime($currentDate)), []) || in_array(date("j", strtotime($currentDate)), $notWorkingDays) ) ? true : false;
     }
 
     /**
      *
      *
      * @param $start
-     * @return mixed
+     * @param null $end
+     * @return string
      */
-    public function getDifference($start)
+    public function getDifference($start, $end = null)
     {
         $strStart = date('Y-m-d') . ' ' . $start;
-        $strEnd = date('Y-m-d H:i:s');
+        $strEnd = $end ? date('Y-m-d') . ' ' . $end : date('Y-m-d H:i:s');
 
         $dteStart = new DateTime($strStart);
         $dteEnd   = new DateTime($strEnd);
@@ -106,27 +107,27 @@ class CustomDateTime extends Component
         return $dteDiff->format("%H:%I:%S");
     }
 
+    public function getDiffBySecond($max, $min)
+    {
+        $timestamp = ($max - $min) + strtotime('00:00:00');
+
+        return date('H:i:s', $timestamp);
+    }
+
     /**
      *
      *
      * @param $hours
-     * @param $beginning
      * @return false|int
      */
-    public function getTotalSecondOfHours($hours, $beginning)
+    public function getTotalSecondOfHours($hours)
     {
         $totalSecondPerMonth = 0;
 
         foreach($hours as $hour) {
             if($hour['total']) {
-                $totalSecondPerMonth = $totalSecondPerMonth + (strtotime($hour['total']) - strtotime("00:00:00"));
+                $totalSecondPerMonth = $totalSecondPerMonth + (strtotime($hour['total']) - strtotime("00:00:00")) - 3600;
             }
-        }
-
-        $secondBeforeLunch = 46800 - (strtotime($beginning) - strtotime("00:00:00"));
-
-        if ($totalSecondPerMonth && $totalSecondPerMonth > $secondBeforeLunch) {
-            $totalSecondPerMonth = $totalSecondPerMonth - 3600;
         }
 
         return $totalSecondPerMonth;
@@ -138,7 +139,7 @@ class CustomDateTime extends Component
      * @param $hour
      * @return false|int
      */
-    public function parserHour($hour)
+    public function parseHour($hour)
     {
         return strtotime($hour) - strtotime('00:00:00');
     }

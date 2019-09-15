@@ -98,6 +98,8 @@ CREATE TABLE IF NOT EXISTS `hours` (
 `usersId` int(10) unsigned NOT NULL,
 `total` time DEFAULT NULL,
 `less` time DEFAULT NULL,
+`late` ENUM('Y', 'N') DEFAULT 'Y',
+`forgot` ENUM('Y', 'N') DEFAULT 'N',
 `createdAt` date NOT NULL,
 PRIMARY KEY (`id`),
 KEY `usersId` (`usersId`)
