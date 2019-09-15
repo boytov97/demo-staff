@@ -16,7 +16,7 @@
     </ul>
     <div class="form-inline my-2 my-lg-0">
       {% if logged_in is defined and not(logged_in is empty) %}
-          {{ authUser['name'] }}
+          {{ authUser['name'] }} -- <a href="{{ url(['for': 'users-changePassword']) }}">ChPass</a>
 
           <a href="{{ url(['for': 'session-logout']) }}" class="btn btn-light">Logout</a>
       {% else %}

@@ -42,7 +42,7 @@ return new \Phalcon\Config([
             'port'     => 465,
             'security' => 'ssl',
             'username' => 'tboyutov@weltkind.com',
-            'password' => 'tboyutov321'
+            'password' => 'cOdEr097693'
         ]
     ],
     'useMail' => true

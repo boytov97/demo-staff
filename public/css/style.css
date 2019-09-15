@@ -127,6 +127,9 @@ body {
     text-align: center;
     height: 25px;
     background: red;
+    color: #fff;
+    padding-top: 2px;
+    box-sizing: border-box;
 }
 
 .forgotten {
