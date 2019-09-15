@@ -129,7 +129,7 @@ class HoursController extends ControllerBase
                 $startEnd = StartEnd::findFirst($startEndId);
 
                 $startEnd->assign([
-                    'end' => date('H:i:s')
+                    'stop' => date('H:i:s')
                 ]);
 
                 if (!$startEnd->save()) {

@@ -5,7 +5,7 @@ use Phalcon\Mvc\User\Component;
 class CustomDateTime extends Component
 {
     /**
-     *
+     * Возвращает массив всех месяцев
      *
      * @return array
      */
@@ -21,7 +21,7 @@ class CustomDateTime extends Component
     }
 
     /**
-     *
+     * Возвращает массив годов
      *
      * @return array
      */
@@ -39,7 +39,7 @@ class CustomDateTime extends Component
     }
 
     /**
-     *
+     * Возвращает массив дней заданного месяца
      *
      * @param $month
      * @param $year
@@ -71,7 +71,7 @@ class CustomDateTime extends Component
     }
 
     /**
-     *
+     * Проверяеть рабочий день или не рабочий день
      *
      * @param $currentDate
      * @param $items
@@ -88,7 +88,7 @@ class CustomDateTime extends Component
     }
 
     /**
-     *
+     * Возвращает разницу между часов в формате H:i:s
      *
      * @param $start
      * @param null $end
@@ -107,6 +107,13 @@ class CustomDateTime extends Component
         return $dteDiff->format("%H:%I:%S");
     }
 
+    /**
+     * Возвращает разницу между секундов в формате H:i:s
+     *
+     * @param $max
+     * @param $min
+     * @return false|string
+     */
     public function getDiffBySecond($max, $min)
     {
         $timestamp = ($max - $min) + strtotime('00:00:00');
@@ -115,7 +122,7 @@ class CustomDateTime extends Component
     }
 
     /**
-     *
+     * Возвращает сумму отработтаных часов в секундах
      *
      * @param $hours
      * @return false|int
@@ -134,7 +141,7 @@ class CustomDateTime extends Component
     }
 
     /**
-     *
+     * Превращает час в форматы H:i:s в секун
      *
      * @param $hour
      * @return false|int

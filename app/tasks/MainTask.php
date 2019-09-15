@@ -1,9 +1,10 @@
 <?php
 
-class TestingController extends ControllerBase
-{
+use Phalcon\Cli\Task;
 
-    public function indexAction()
+class MainTask extends Task
+{
+    public function mainAction()
     {
         $hours = Hours::find([
             'conditions' => 'createdAt = :createdAt:',
@@ -30,8 +31,8 @@ class TestingController extends ControllerBase
 
                     $forgottenHour = Hours::findFirstById($hour->id);
                     $forgottenHour->assign([
-                       'total' => '00:00:00',
-                       'less'  => '09:00:00'
+                        'total' => '00:00:00',
+                        'less'  => '09:00:00'
                     ]);
 
                     $forgottenHour->save();
@@ -40,4 +41,3 @@ class TestingController extends ControllerBase
         }
     }
 }
-

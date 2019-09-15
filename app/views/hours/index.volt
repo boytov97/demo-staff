@@ -115,7 +115,7 @@
                                                               <input type="hidden" id="update-hours-link" value="{{ url(['for': 'hours-update-total', 'id': hour.id ]) }}">
 
                                                               {% for startEnd in hour.startEnds %}
-                                                                  {% set endStop = startEnd.end ? startEnd.end :
+                                                                  {% set endStop = startEnd.stop ? startEnd.stop :
                                                                   '<a href="' ~
                                                                   url(['for': 'hours-update', 'id': hour.id, 'startEndId': startEnd.id ])
                                                                   ~ '" name="stop" class="update-hours">stop</a>' %}
@@ -144,7 +144,13 @@
                                                               </center>
                                                         {% elseif currentDate !== date['date'] %}
                                                               {% for startEnd in hour.startEnds %}
-                                                                  <center>{{ startEnd.start }} - {{ startEnd.end }}</center>
+                                                                  <center>{{ startEnd.start }} -
+                                                                      {% if startEnd.stop === 'forgot' %}
+                                                                          <span class="forgotten">{{ startEnd.stop }}</span>
+                                                                      {% else %}
+                                                                          {{ startEnd.stop }}
+                                                                      {% endif %}
+                                                                  </center>
                                                               {% endfor %}
                                                               <center>
                                                                   {% if hour.total is not empty %}
@@ -234,15 +240,15 @@
                     $.each(parsedData.startEnds, function(key, value) {
                         var startEnd = '.start-end_' + value.id;
 
-                        if(value.end === null && value.start !== null) {
+                        if(value.stop === null && value.start !== null) {
                             $(startEnd).find('a').attr('name', 'stop').html('stop');
 
                             $(startEnd).html(value.start + ' - ' + $(startEnd).html());
                         } else {
-                            if(value.end === null && value.start === null && parsedData.updateUrl !== null) {
+                            if(value.stop === null && value.start === null && parsedData.updateUrl !== null) {
                                 $('.new-startEnd').last().append('<span class="start-end_'+ value.id +'"><a href="' + parsedData.updateUrl + '" name="start" class="update-hours" >start</a></span>');
                             } else {
-                                $(startEnd).html(value.start + ' - ' + value.end);
+                                $(startEnd).html(value.start + ' - ' + value.stop);
 
                                 if (parsedData.startEnds.length - 2 === key && parsedData.action === 'stop') {
                                     $(startEnd).parent().after('<center class="new-startEnd"></center>');
