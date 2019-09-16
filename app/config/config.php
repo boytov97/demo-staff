@@ -10,8 +10,8 @@ return new \Phalcon\Config([
     'database' => [
         'adapter'     => 'Mysql',
         'host'        => 'localhost',
-        'username'    => 'root',
-        'password'    => 'coder097693',
+        'username'    => 'invo',
+        'password'    => 'root',
         'dbname'      => 'staff',
         'charset'     => 'utf8',
     ],
@@ -42,8 +42,11 @@ return new \Phalcon\Config([
             'port'     => 465,
             'security' => 'ssl',
             'username' => 'tboyutov@weltkind.com',
-            'password' => 'tboyutov321'
+            'password' => 'cOdEr097693'
         ]
     ],
-    'useMail' => true
+    'useMail' => true,
+    'uploads' => [
+        'path' => '/uploads/'
+    ]
 ]);

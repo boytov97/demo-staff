@@ -42,6 +42,12 @@ class Users extends \Phalcon\Mvc\Model
     public $active;
 
     /**
+     *
+     * @var
+     */
+    public $image;
+
+    /**
      * Validations and business logic
      *
      * @return boolean
@@ -123,4 +129,8 @@ class Users extends \Phalcon\Mvc\Model
         return parent::findFirst($parameters);
     }
 
+    public function getImagePath()
+    {
+        return '';
+    }
 }

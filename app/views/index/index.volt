@@ -1,9 +1,11 @@
 {{ content() }}
 
-<div class="col-md-12">
-    <div class="row">
-        <div class="table__wrapper">
-            Home
+<div class="page__wrapper">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="">
+                Home
+            </div>
         </div>
     </div>
 </div>

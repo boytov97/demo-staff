@@ -11,6 +11,11 @@ body {
     background-color: #FDFFE1;
 }
 
+.page__wrapper {
+    width: 100%;
+    padding: 10px;
+}
+
 .form__wrapper {
     width: 500px;
     margin: 40px auto;
@@ -120,13 +125,16 @@ body {
     margin-top: 20px;
     width: 100%;
     height: 25px;
-    background: yellow;
+    background: #28a745;
 }
 
 .late_count_scale {
     text-align: center;
     height: 25px;
     background: red;
+    color: #fff;
+    padding-top: 2px;
+    box-sizing: border-box;
 }
 
 .forgotten {
@@ -134,6 +142,42 @@ body {
     margin: 5px;
     color: red;
     font-size: 20px;
+}
+
+.profile__wrapper {
+    display: block;
+    max-width: 500px;
+    width: 100%;
+    margin: 30px auto;
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+
+.profile_image_wrapper {
+    width: 180px;
+    margin: auto;
+    position: relative;
+}
+
+.profile_image {
+    width: 180px;
+
+}
+
+.link_to_change_password {
+    width: 100%;
+    text-align: center;
+}
+
+.delete_file {
+    padding: 3px 6px 4px 6px;
+    font-size: 20px;
+    background: red;
+    border-radius: 5px;
+    color: #fff;
+    position: absolute;
+    right: 0;
+    bottom: 0;
 }
 
 @media screen and (max-width: 430px) {

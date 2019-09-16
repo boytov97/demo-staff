@@ -63,7 +63,7 @@ class CustomDateTime extends Component
             $datesMonth[$i] = [
                 'day'  => date("l", $mktime),
                 'date' => date('Y-m-d', $mktime),
-                'working_day' => (in_array(date("N", $mktime), []) || in_array(date("j", $mktime), $notWorkingDays) ) ? 0 : 1
+                'working_day' => (in_array(date("N", $mktime), [6, 7]) || in_array(date("j", $mktime), $notWorkingDays) ) ? 0 : 1
             ];
         }
 
@@ -84,7 +84,7 @@ class CustomDateTime extends Component
             $notWorkingDays[] = $notWorkingDay->day;
         }
 
-        return (in_array(date("N", strtotime($currentDate)), []) || in_array(date("j", strtotime($currentDate)), $notWorkingDays) ) ? true : false;
+        return (in_array(date("N", strtotime($currentDate)), [6, 7]) || in_array(date("j", strtotime($currentDate)), $notWorkingDays) ) ? true : false;
     }
 
     /**

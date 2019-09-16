@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
+  `image` varchar(255) DEFAULT NULL,
   `password` char(60) NOT NULL,
   `profilesId` int(10) unsigned NOT NULL,
   `active` char(1) DEFAULT NULL,
@@ -112,8 +113,8 @@ DROP TABLE IF EXISTS `start_end`;
 CREATE TABLE IF NOT EXISTS `start_end` (
 `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 `hourId` int(10) unsigned NOT NULL,
-`start` time DEFAULT NULL,
-`stop` time DEFAULT NULL,
+`start` varchar(10) DEFAULT NULL,
+`stop` varchar(10) DEFAULT NULL,
 PRIMARY KEY (`id`),
 KEY `hourId` (`hourId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
