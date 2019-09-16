@@ -15,6 +15,30 @@ $router->add('/reset-password/{code}/{email}', [
 ]);
 
 $router->add(
+    '/user/profile',
+    [
+        'controller' => 'users',
+        'action'     => 'index',
+    ]
+)->setName('user-profile');
+
+$router->addPost(
+    '/user/profile',
+    [
+        'controller' => 'users',
+        'action'     => 'update',
+    ]
+)->setName('user-profile-update');
+
+$router->add(
+    '/user/delete-uploads',
+    [
+        'controller' => 'users',
+        'action'     => 'deleteUploads',
+    ]
+)->setName('user-delete-uploads');
+
+$router->add(
     '/user/change-password',
     [
         'controller' => 'users',
@@ -47,6 +71,14 @@ $router->add(
 )->setName('session-logout');
 
 $router->add(
+    '/hours/index/',
+    [
+        'controller' => 'hours',
+        'action'     => 'index',
+    ]
+)->setName('hours-index');
+
+$router->add(
     '/forgot-password',
     [
         'controller' => 'session',
@@ -69,13 +101,5 @@ $router->addPost(
         'action'     => 'updateTotal',
     ]
 )->setName('hours-update-total');
-
-$router->add(
-    '/hours/index/',
-    [
-        'controller' => 'hours',
-        'action'     => 'index',
-    ]
-)->setName('hours-index');
 
 return $router;

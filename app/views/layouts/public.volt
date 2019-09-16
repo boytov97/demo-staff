@@ -14,13 +14,13 @@
       </li>
     </ul>
     <div class="form-inline my-2 my-lg-0">
-      {% if logged_in is defined and not(logged_in is empty) %}
-          {{ link_to('admin/index', 'Admin', 'class': 'btn btn-outline-primary') }}
+        {% if logged_in is defined and not(logged_in is empty) %}
+          <a href="{{ url(['for': 'user-profile']) }}">{{ authUser['name'] }}</a>
 
           <a href="{{ url(['for': 'session-logout']) }}" class="btn btn-light">Logout</a>
-      {% else %}
+        {% else %}
           <a href="{{ url(['for': 'session-index']) }}" class="btn btn-light">Login</a>
-      {% endif %}
+        {% endif %}
     </div>
   </div>
 </nav>

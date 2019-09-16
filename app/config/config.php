@@ -10,8 +10,8 @@ return new \Phalcon\Config([
     'database' => [
         'adapter'     => 'Mysql',
         'host'        => 'localhost',
-        'username'    => 'root',
-        'password'    => 'coder097693',
+        'username'    => 'invo',
+        'password'    => 'root',
         'dbname'      => 'staff',
         'charset'     => 'utf8',
     ],
@@ -45,5 +45,8 @@ return new \Phalcon\Config([
             'password' => 'cOdEr097693'
         ]
     ],
-    'useMail' => true
+    'useMail' => true,
+    'uploads' => [
+        'path' => '/uploads/'
+    ]
 ]);
