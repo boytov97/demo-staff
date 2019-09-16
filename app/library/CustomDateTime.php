@@ -88,23 +88,23 @@ class CustomDateTime extends Component
     }
 
     /**
-     * Возвращает разницу между часов в формате H:i:s
+     * Возвращает сумму отработанных часов в формате H:s
      *
-     * @param $start
-     * @param null $end
-     * @return string
+     * @param $startEnds
+     * @return false|string
      */
-    public function getDifference($start, $end = null)
+    public function getTotalDifference($startEnds)
     {
-        $strStart = date('Y-m-d') . ' ' . $start;
-        $strEnd = $end ? date('Y-m-d') . ' ' . $end : date('Y-m-d H:i:s');
+        $totalSecond = 0;
 
-        $dteStart = new DateTime($strStart);
-        $dteEnd   = new DateTime($strEnd);
+        foreach ($startEnds as $startEnd) {
+            if($startEnd->start) {
+                $stop = $startEnd->stop ?: date('H:i:s');
+                $totalSecond = $totalSecond + (strtotime($stop) - strtotime($startEnd->start));
+            }
+        }
 
-        $dteDiff  = $dteStart->diff($dteEnd);
-
-        return $dteDiff->format("%H:%I:%S");
+        return date('H:i', $totalSecond + strtotime('00:00:00'));
     }
 
     /**
@@ -133,7 +133,7 @@ class CustomDateTime extends Component
 
         foreach($hours as $hour) {
             if($hour['total']) {
-                $totalSecondPerMonth = $totalSecondPerMonth + (strtotime($hour['total']) - strtotime("00:00:00")) - 3600;
+                $totalSecondPerMonth = $totalSecondPerMonth + (strtotime($hour['total']) - strtotime("00:00:00") - 3600);
             }
         }
 

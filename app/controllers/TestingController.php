@@ -5,39 +5,11 @@ class TestingController extends ControllerBase
 
     public function indexAction()
     {
-        $hours = Hours::find([
-            'conditions' => 'createdAt = :createdAt:',
-            'bind' => [
-                'createdAt' => date('Y-m-d')
-            ]
-        ]);
+        $settings = new Settings();
 
-        foreach ($hours as $hour) {
-
-            foreach ($hour->startEnds as $startEnd) {
-                if(!$startEnd->start && !$startEnd->stop) {
-                    $emptyStartEnd = StartEnd::findFirstById($startEnd->id);
-                    $emptyStartEnd->delete();
-                }
-
-                if($startEnd->start && !$startEnd->stop) {
-                    $forgotten = StartEnd::findFirstById($startEnd->id);
-                    $forgotten->assign([
-                        'stop' => 'forgot'
-                    ]);
-
-                    $forgotten->save();
-
-                    $forgottenHour = Hours::findFirstById($hour->id);
-                    $forgottenHour->assign([
-                       'total' => '00:00:00',
-                       'less'  => '09:00:00'
-                    ]);
-
-                    $forgottenHour->save();
-                }
-            }
-        }
+        echo '<pre>';
+        print_r(  $settings->getByKey('max_late') );
+        echo '</pre>';
     }
 }
 

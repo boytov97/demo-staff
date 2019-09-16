@@ -9,12 +9,15 @@
                     <p>You have/Assigned: <span class="total_hours_per_month">{{ percentOfTotal }}%</span></p>
                     <p>Assigned: <span class="total_hours_per_month">{{ workingHoursCount }}</span></p>
                     <span>Ты опаздал: {{ authUserlateCount }} раз</span><br>
-                    <span>Если общее кол-во опозданий превысит {{ maxLate }}.</span><br>
-                    <span>Будут применятся штрафные санкции.</span>
 
-                    <div class="scale_max_late">
-                        <div style="width: {{ lateCountPerMonth * maxLate / 100 }}%;" class="late_count_scale">{{ lateCountPerMonth }}</div>
-                    </div>
+                    {% if maxLate is defined %}
+                        <span>Если общее кол-во опозданий превысит {{ maxLate }}.</span><br>
+                        <span>Будут применятся штрафные санкции.</span>
+
+                        <div class="scale_max_late">
+                            <div style="width: {{ lateCountPerMonth * maxLate / 100 }}%;" class="late_count_scale">{{ lateCountPerMonth }}</div>
+                        </div>
+                    {% endif %}
                 </div>
 
                 <div class="col-md-6 lates_statistics__wrapper">
@@ -111,63 +114,61 @@
                                           <div class="hours__wrapper">
                                               <input type="checkbox" disabled {{ date['working_day'] ? 'checked' : '' }}>
 
-                                              {% if date['working_day'] %}
-                                                  {% for hour in user.hours %}
-                                                        {% if hour.createdAt == date['date'] %}
-                                                            {% if user.id == authUser['id'] and currentDate === date['date'] %}
-                                                                  <input type="hidden" id="update-hours-link" value="{{ url(['for': 'hours-update-total', 'id': hour.id ]) }}">
+                                              {% for hour in user.hours %}
+                                                    {% if hour.createdAt == date['date'] %}
+                                                        {% if user.id == authUser['id'] and currentDate === date['date'] %}
+                                                              <input type="hidden" id="update-hours-link" value="{{ url(['for': 'hours-update-total', 'id': hour.id ]) }}">
 
-                                                                  {% for startEnd in hour.startEnds %}
-                                                                      {% set endStop = startEnd.stop ? startEnd.stop :
-                                                                      '<a href="' ~
-                                                                      url(['for': 'hours-update', 'id': hour.id, 'startEndId': startEnd.id ])
-                                                                      ~ '" name="stop" class="update-hours">stop</a>' %}
-
-                                                                      <center>
-                                                                          <span class="start-end_{{ startEnd.id }}">{{ startEnd.start ? startEnd.start ~ ' - ' ~ endStop :
-                                                                              '<a href="' ~
-                                                                              url(['for': 'hours-update', 'id': hour.id, 'startEndId': startEnd.id ])
-                                                                              ~ '" name="start" class="update-hours">start</a>' }}
-                                                                          </span>
-                                                                      </center>
-                                                                  {% endfor %}
+                                                              {% for startEnd in hour.startEnds %}
+                                                                  {% set endStop = startEnd.stop ? startEnd.stop :
+                                                                  '<a href="' ~
+                                                                  url(['for': 'hours-update', 'id': hour.id, 'startEndId': startEnd.id ])
+                                                                  ~ '" name="stop" class="update-hours">stop</a>' %}
 
                                                                   <center>
-                                                                      <span class="total-hour auth-user-total">
-                                                                          {% if hour.total is not empty %}
-                                                                              total: {{ hour.total }}
-                                                                          {% endif %}
-                                                                      </span>
-
-                                                                      <span class="less-hour auth-user-less">
-                                                                          {% if hour.less is not empty %}
-                                                                              less: {{ hour.less }}
-                                                                          {% endif %}
+                                                                      <span class="start-end_{{ startEnd.id }}">{{ startEnd.start ? startEnd.start ~ ' - ' ~ endStop :
+                                                                          '<a href="' ~
+                                                                          url(['for': 'hours-update', 'id': hour.id, 'startEndId': startEnd.id ])
+                                                                          ~ '" name="start" class="update-hours">start</a>' }}
                                                                       </span>
                                                                   </center>
-                                                            {% elseif currentDate !== date['date'] %}
-                                                                  {% for startEnd in hour.startEnds %}
-                                                                      <center>{{ startEnd.start }} -
-                                                                          {% if startEnd.stop === 'forgot' %}
-                                                                              <span class="forgotten">{{ startEnd.stop }}</span>
-                                                                          {% else %}
-                                                                              {{ startEnd.stop }}
-                                                                          {% endif %}
-                                                                      </center>
-                                                                  {% endfor %}
-                                                                  <center>
+                                                              {% endfor %}
+
+                                                              <center>
+                                                                  <span class="total-hour auth-user-total">
                                                                       {% if hour.total is not empty %}
-                                                                          <span class="total-hour">total: {{ hour.total }}</span>
+                                                                          total: {{ hour.total }}
                                                                       {% endif %}
+                                                                  </span>
 
+                                                                  <span class="less-hour auth-user-less">
                                                                       {% if hour.less is not empty %}
-                                                                          <span class="less-hour">less: {{ hour.less }}</span>
+                                                                          less: {{ hour.less }}
+                                                                      {% endif %}
+                                                                  </span>
+                                                              </center>
+                                                        {% elseif currentDate !== date['date'] %}
+                                                              {% for startEnd in hour.startEnds %}
+                                                                  <center>{{ startEnd.start }} -
+                                                                      {% if startEnd.stop === 'forgot' %}
+                                                                          <span class="forgotten">{{ startEnd.stop }}</span>
+                                                                      {% else %}
+                                                                          {{ startEnd.stop }}
                                                                       {% endif %}
                                                                   </center>
-                                                            {% endif %}
-                                                         {% endif %}
-                                                  {% endfor %}
-                                              {% endif %}
+                                                              {% endfor %}
+                                                              <center>
+                                                                  {% if hour.total is not empty %}
+                                                                      <span class="total-hour">total: {{ hour.total }}</span>
+                                                                  {% endif %}
+
+                                                                  {% if hour.less is not empty %}
+                                                                      <span class="less-hour">less: {{ hour.less }}</span>
+                                                                  {% endif %}
+                                                              </center>
+                                                        {% endif %}
+                                                     {% endif %}
+                                              {% endfor %}
                                           </div>
                                       </td>
                                   {% endfor %}

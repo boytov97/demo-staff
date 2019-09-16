@@ -72,4 +72,27 @@ class StartEnd extends \Phalcon\Mvc\Model
         return parent::findFirst($parameters);
     }
 
+    public function findByHourId($hourId)
+    {
+        $startEnds = self::find([
+            'conditions' => 'hourId = :hourId:',
+            'bind' => [
+                'hourId' => $hourId
+            ]
+        ]);
+
+        return $startEnds;
+    }
+
+    public function findFirstByHourId($hourId)
+    {
+        $firstStartEnd = self::findFirst([
+            'conditions' => 'hourId = :hourId:',
+            'bind' => [
+                'hourId' => $hourId,
+            ],
+        ]);
+
+        return $firstStartEnd;
+    }
 }

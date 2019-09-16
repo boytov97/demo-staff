@@ -69,8 +69,8 @@ class Settings extends \Phalcon\Mvc\Model
             'bind' => [
                 'key' => $key
             ]
-        ])->toArray();
+        ]);
 
-        return $item['value'];
+        return $item ? $item->value : null;
     }
 }
