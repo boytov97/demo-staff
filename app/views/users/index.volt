@@ -12,6 +12,8 @@
                                 <a href="{{ url(['for': 'user-delete-uploads']) }}" class="delete_file" title="delete image">
                                     <i class="fa fa-trash-o" aria-hidden="true"></i>
                                 </a>
+                            {% else %}
+                                {{ image('img/default.jpg', 'alt': user.name, 'class': 'img-thumbnail') }}
                             {% endif %}
                         </div>
 
