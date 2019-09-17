@@ -65,11 +65,6 @@
 
 <script>
     $(document).ready(function () {
-        $('#hide-show').on('click', function () {
-            $('.full_day').each(function () {
-                $(this).toggleClass('not_current_working_line');
-            });
-        });
 
         var updateTotalInterval;
 

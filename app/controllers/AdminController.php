@@ -2,11 +2,46 @@
 
 class AdminController extends ControllerBase
 {
+    protected $month;
+    
+    protected $year;
+
+    public function beforeExecuteRoute()
+    {
+        $this->month = date('m');
+        $this->year = date('Y');
+    }
+    
     public function indexAction()
     {
+        if ($month = $this->request->get('month')) {
+            $this->month = $month;
+        }
 
+        if ($year = $this->request->get('year')) {
+            $this->year = $year;
+        }
+        
+        $users = Users::find();
+
+        $notWorkingDays = $this->getNotWorkingDaysModel()->getAllByMonth($this->month);
+        $datesMonth = $this->dateTime->getDates($this->month, $this->year, $notWorkingDays);
+
+        $this->view->currentDate = date('Y-m-d');
         $this->view->authUser = $this->identity;
         $this->view->admin = true;
+        $this->view->users = $users;
+        $this->view->years = $this->dateTime->getYears();
+        $this->view->months = $this->dateTime->getMonths();
+        $this->view->defaultYear = $this->year;
+        $this->view->defaultMonth = $this->month;
+        $this->view->datesMonth = $datesMonth;
+    }
+
+    public function updateStartEndAction($id)
+    {
+
+        return $this->response->redirect('admin');
     }
 
     public function createUserAction()
@@ -107,6 +142,11 @@ class AdminController extends ControllerBase
     protected function getUsersModel()
     {
         return new Users();
+    }
+
+    protected function getNotWorkingDaysModel()
+    {
+        return new NotWorkingDays();
     }
 }
 

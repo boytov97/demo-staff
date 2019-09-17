@@ -70,7 +70,8 @@ class HoursController extends ControllerBase
             }
         }
 
-        $datesMonth = $this->dateTime->getDates($this->month, $this->year, $this->getNotWorkingDays($this->month));
+        $notWorkingDays = $this->getNotWorkingDaysModel()->getAllByMonth($this->month);
+        $datesMonth = $this->dateTime->getDates($this->month, $this->year, $notWorkingDays);
         $totalSecondPerMonth = $this->getTotalSecondPerMonth($this->month, $this->year);
         $workingDaysCount = $this->getWorkingDaysCount($datesMonth);
 
@@ -151,7 +152,9 @@ class HoursController extends ControllerBase
                 $startEnds = $this->getStartEndModel()->findByHourId($hour->id);
                 $this->total = $this->dateTime->getTotalDifference($startEnds);
 
-                if (!$this->dateTime->isNotWorkingDay(date('H:i:s'), $this->getNotWorkingDays($this->month))) {
+                $notWorkingDays = $this->getNotWorkingDaysModel()->getAllByMonth($this->month);
+
+                if (!$this->dateTime->isNotWorkingDay(date('H:i:s'), $notWorkingDays)) {
                     $this->less = (($this->hourForDay * 3600) > $this->dateTime->parseHour($this->total)) ?
                         $this->dateTime->getDiffBySecond($this->hourForDay * 3600, $this->dateTime->parseHour($this->total)) : null;
                 }
@@ -247,24 +250,6 @@ class HoursController extends ControllerBase
         }
 
         return $hour;
-    }
-
-    /**
-     * Возвращает не рабочие дни который добавил админ
-     *
-     * @param $month
-     * @return NotWorkingDays|NotWorkingDays[]|\Phalcon\Mvc\Model\ResultSetInterface
-     */
-    protected function getNotWorkingDays($month)
-    {
-        $items = NotWorkingDays::find([
-            'conditions' => 'month = :month:',
-            'bind'       => [
-                'month' => $month,
-            ]
-        ]);
-
-        return $items;
     }
 
     /**
@@ -411,5 +396,10 @@ class HoursController extends ControllerBase
     protected function getStartEndModel()
     {
         return new StartEnd();
+    }
+
+    protected function getNotWorkingDaysModel()
+    {
+        return new NotWorkingDays();
     }
 }

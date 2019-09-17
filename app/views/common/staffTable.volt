@@ -30,7 +30,31 @@
                                 {% for hour in user.hours %}
                                     {% if hour.createdAt == date['date'] %}
                                         {% if admin is defined and admin %}
+                                            {% for startEnd in hour.startEnds %}
+                                                {% if startEnd.start is not empty or startEnd.stop is not empty %}
+                                                    <form action="{{ url(['for': 'admin-update-start-end', 'id': startEnd.id]) }}" class="counter-value__wrapper">
+                                                        {% if startEnd.start is not empty %}
+                                                            <input type="text" name="start" value="{{ startEnd.start }}"
+                                                                   class="start-end__input input_without_border"> -
+                                                        {% endif %}
 
+                                                        {% if startEnd.stop is not empty %}
+                                                            <input type="text" name="start" value="{{ startEnd.stop }}"
+                                                                   class="start-end__input input_without_border">
+                                                        {% endif %}
+
+                                                        <a href=""
+                                                           class="input-group-addon btn bg-red start_end_edit" title="edit">
+                                                            <i class="fa fa-pencil"></i>
+                                                        </a>
+
+                                                        <button type="submit" class="input-group-addon btn bg-red start_end_save  hidden_start-end_btn"
+                                                                title="{{ (user.active === 'N') ? 'activate' : 'deactivate' }}">
+                                                            <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                                                        </button>
+                                                    </form>
+                                                {% endif %}
+                                            {% endfor %}
                                         {% else %}
                                             {% if user.id == authUser['id'] and currentDate === date['date'] %}
                                                 <span class="{{ hour.late ? 'auth_user_is_late' : '' }}"></span>

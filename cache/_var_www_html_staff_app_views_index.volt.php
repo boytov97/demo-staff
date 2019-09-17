@@ -5,8 +5,9 @@
 
         <meta name="viewport" content="width=device-width">
 
-		<?= $this->tag->stylesheetLink('css/style.css') ?>
-        <?= $this->tag->stylesheetLink('bootstrap/css/bootstrap.css') ?>
+        <?= $this->tag->stylesheetLink('bootstrap/css/bootstrap.min.css') ?>
+        <?= $this->tag->stylesheetLink('font-awesome/css/font-awesome.min.css') ?>
+        <?= $this->tag->stylesheetLink('css/style.css') ?>
 
         <?= $this->tag->javascriptInclude('js/jquery-2.2.4.js') ?>
 	</head>
@@ -15,6 +16,7 @@
 		<?= $this->getContent() ?>
 
         <?= $this->tag->javascriptInclude('bootstrap/js/bootstrap.js') ?>
+        <?= $this->tag->javascriptInclude('js/script.js') ?>
 
 	</body>
 </html>
