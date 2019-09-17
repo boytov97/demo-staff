@@ -22,14 +22,6 @@ $router->add(
     ]
 )->setName('user-profile');
 
-$router->addPost(
-    '/user/profile',
-    [
-        'controller' => 'users',
-        'action'     => 'update',
-    ]
-)->setName('user-profile-update');
-
 $router->add(
     '/user/delete-uploads',
     [
@@ -101,5 +93,45 @@ $router->addPost(
         'action'     => 'updateTotal',
     ]
 )->setName('hours-update-total');
+
+$router->add(
+    '/admin',
+    [
+        'controller' => 'admin',
+        'action'     => 'index',
+    ]
+)->setName('admin-index');
+
+$router->add(
+    '/admin/users',
+    [
+        'controller' => 'admin',
+        'action'     => 'users',
+    ]
+)->setName('admin-users');
+
+$router->add(
+    '/admin/user/{id}/edit',
+    [
+        'controller' => 'admin',
+        'action'     => 'edit',
+    ]
+)->setName('admin-users-edit');
+
+$router->addPost(
+    '/admin/user/{id}/activate-deactivate',
+    [
+        'controller' => 'admin',
+        'action'     => 'updateActivity',
+    ]
+)->setName('admin-users-update-activity');
+
+$router->add(
+    '/admin/create-user',
+    [
+        'controller' => 'admin',
+        'action'     => 'createUser',
+    ]
+)->setName('admin-create-user');
 
 return $router;

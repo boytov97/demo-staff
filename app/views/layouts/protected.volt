@@ -12,6 +12,9 @@
         <a class="nav-link" href="{{ url(['for': 'home']) }}">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
+        <a class="nav-link" href="{{ url(['for': 'admin-index']) }}">Admin</a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" href="{{ url(['for': 'hours-index']) }}">Hours</a>
       </li>
       <li class="nav-item">

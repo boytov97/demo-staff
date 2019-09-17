@@ -109,7 +109,7 @@ body {
     margin: 0 auto;
 }
 
-.late__image {
+.late__image, .admin_user_image {
     width: 70px;
 }
 
@@ -144,7 +144,7 @@ body {
     font-size: 20px;
 }
 
-.profile__wrapper {
+.profile__wrapper, .create-user__wrapper {
     display: block;
     max-width: 500px;
     width: 100%;
@@ -161,7 +161,6 @@ body {
 
 .profile_image {
     width: 180px;
-
 }
 
 .link_to_change_password {
@@ -178,6 +177,34 @@ body {
     position: absolute;
     right: 0;
     bottom: 0;
+}
+
+.counter-value__wrapper {
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.not_active {
+    background: #ffb9b2;
+}
+
+.admin_user_image_wrp {
+    text-align: center;
+}
+
+.edit__icon_link {
+    padding: 3px 5px;
+    background: #007BFF;
+    color: #fff;
+}
+
+.edit__icon_link:hover {
+    color: #ccc;
+}
+
+.action__wrapper {
+    display: inline-block;
 }
 
 @media screen and (max-width: 430px) {

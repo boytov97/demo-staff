@@ -296,14 +296,7 @@ class HoursController extends ControllerBase
     protected function getTotalSecondPerMonth($month, $year)
     {
         $createdAt = $year . '-' . $month . '%';
-
-        $hours = Hours::find([
-            'conditions' => 'createdAt LIKE :createdAt: AND usersId = :id:',
-            'bind'       => [
-                'createdAt' => $createdAt,
-                'id'        => $this->identity['id']
-            ]
-        ])->toArray();
+        $hours = $this->getModel()->getByCreatedAt($createdAt, $this->identity['id']);
 
         return $this->dateTime->getTotalSecondOfHours($hours);
     }
@@ -366,15 +359,7 @@ class HoursController extends ControllerBase
     {
         $createdAt = $year . '-' . $month . '%';
 
-        $lateCountPerMonth = Hours::find([
-            'conditions' => 'createdAt LIKE :createdAt: AND late = :late:',
-            'bind'       => [
-                'createdAt' => $createdAt,
-                'late'      => 1
-            ]
-        ])->count();
-
-        return $lateCountPerMonth;
+        return $this->getModel()->getLateCountByCreatedAt($createdAt);
     }
 
     /**
@@ -388,16 +373,7 @@ class HoursController extends ControllerBase
     {
         $createdAt = $year . '-' . $month . '%';
 
-        $authUserlateCount = Hours::find([
-            'conditions' => 'createdAt LIKE :createdAt: AND usersId = :id: AND late = :late:',
-            'bind'       => [
-                'createdAt' => $createdAt,
-                'id'        => $this->identity['id'],
-                'late'      => 1
-            ]
-        ])->count();
-
-        return $authUserlateCount;
+        return $this->getModel()->getAuthLateCountByCreatedAt($createdAt, $this->identity['id']);
     }
 
     /**
@@ -425,6 +401,11 @@ class HoursController extends ControllerBase
             ->execute();
 
         return $lateUsers;
+    }
+
+    protected function getModel()
+    {
+        return new Hours();
     }
 
     protected function getStartEndModel()

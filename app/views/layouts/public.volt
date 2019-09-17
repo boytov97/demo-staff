@@ -9,10 +9,18 @@
       <li class="nav-item active">
         <a class="nav-link" href="{{ url(['for': 'home']) }}">Home <span class="sr-only">(current)</span></a>
       </li>
+
+      {% if logged_in is defined and not(logged_in is empty) %}
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url(['for': 'hours-index']) }}">Hours</a>
+        </li>
+      {% endif %}
+
       <li class="nav-item">
         <a class="nav-link" href="">About</a>
       </li>
     </ul>
+
     <div class="form-inline my-2 my-lg-0">
         {% if logged_in is defined and not(logged_in is empty) %}
           <a href="{{ url(['for': 'user-profile']) }}">{{ authUser['name'] }}</a>

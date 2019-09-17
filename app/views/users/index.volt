@@ -4,7 +4,7 @@
     <div class="col-md-12">
         <div class="row">
             <div class="profile__wrapper">
-                <form action="{{ url(['for': 'user-profile-update']) }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ url(['for': 'user-profile']) }}" method="POST" enctype="multipart/form-data">
                     <div class="form-group">
                         <div class="profile_image_wrapper">
                             {% if user.image is not empty %}

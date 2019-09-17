@@ -8,7 +8,7 @@
                     <p>Total hours per month: <span class="total_hours_per_month">{{ totalPerMonth }}</span></p>
                     <p>You have/Assigned: <span class="total_hours_per_month">{{ percentOfTotal }}%</span></p>
                     <p>Assigned: <span class="total_hours_per_month">{{ workingHoursCount }}</span></p>
-                    <span>Ты опаздал: {{ authUserlateCount }} раз</span><br>
+                    <span>Ты опаздал: {{ authUserlateCount ? authUserlateCount : 0 }} раз</span><br>
 
                     {% if maxLate is defined %}
                         <span>Если общее кол-во опозданий превысит {{ maxLate }}.</span><br>
@@ -95,6 +95,7 @@
                                               {% for hour in user.hours %}
                                                     {% if hour.createdAt == date['date'] %}
                                                         {% if user.id == authUser['id'] and currentDate === date['date'] %}
+                                                              <span class="{{ hour.late ? 'auth_user_is_late' : '' }}"></span>
                                                               <input type="hidden" id="update-hours-link" value="{{ url(['for': 'hours-update-total', 'id': hour.id ]) }}">
 
                                                               {% for startEnd in hour.startEnds %}
@@ -103,16 +104,16 @@
                                                                   url(['for': 'hours-update', 'id': hour.id, 'startEndId': startEnd.id ])
                                                                   ~ '" name="stop" class="update-hours">stop</a>' %}
 
-                                                                  <center>
+                                                                  <p class="counter-value__wrapper">
                                                                       <span class="start-end_{{ startEnd.id }}">{{ startEnd.start ? startEnd.start ~ ' - ' ~ endStop :
                                                                           '<a href="' ~
                                                                           url(['for': 'hours-update', 'id': hour.id, 'startEndId': startEnd.id ])
                                                                           ~ '" name="start" class="update-hours">start</a>' }}
                                                                       </span>
-                                                                  </center>
+                                                                  </p>
                                                               {% endfor %}
 
-                                                              <center>
+                                                              <p class="counter-value__wrapper">
                                                                   <span class="total-hour auth-user-total">
                                                                       {% if hour.total is not empty %}
                                                                           total: {{ hour.total }}
@@ -124,18 +125,20 @@
                                                                           less: {{ hour.less }}
                                                                       {% endif %}
                                                                   </span>
-                                                              </center>
+                                                              </p>
                                                         {% elseif currentDate !== date['date'] %}
+                                                            <span class="{{ hour.late ? 'user_is_late' : '' }}"></span>
+
                                                               {% for startEnd in hour.startEnds %}
-                                                                  <center>{{ startEnd.start }} -
+                                                                  <p class="counter-value__wrapper">{{ startEnd.start }} -
                                                                       {% if startEnd.stop === 'forgot' %}
                                                                           <span class="forgotten">{{ startEnd.stop }}</span>
                                                                       {% else %}
                                                                           {{ startEnd.stop }}
                                                                       {% endif %}
-                                                                  </center>
+                                                                  </p>
                                                               {% endfor %}
-                                                              <center>
+                                                              <p class="counter-value__wrapper">
                                                                   {% if hour.total is not empty %}
                                                                       <span class="total-hour">total: {{ hour.total }}</span>
                                                                   {% endif %}
@@ -143,7 +146,7 @@
                                                                   {% if hour.less is not empty %}
                                                                       <span class="less-hour">less: {{ hour.less }}</span>
                                                                   {% endif %}
-                                                              </center>
+                                                              </p>
                                                         {% endif %}
                                                      {% endif %}
                                               {% endfor %}
