@@ -13,20 +13,9 @@ class UsersController extends ControllerBase
         $form = new ProfileForm();
         $user = Users::findFirstById($this->identity['id']);
 
-        $this->view->user = $user;
-        $this->view->authUser = $this->identity;
-        $this->view->form = $form;
-    }
-
-    public function updateAction()
-    {
-        $form = new ProfileForm();
-        $user = Users::findFirstById($this->identity['id']);
-
         if ($this->request->isPost()) {
 
             if($form->isValid(array_merge($this->request->getPost(), $_FILES))) {
-
                 $image = $user->image;
 
                 if ($this->request->hasFiles('image') == true) {
@@ -64,6 +53,10 @@ class UsersController extends ControllerBase
                 }
             }
         }
+
+        $this->view->user = $user;
+        $this->view->authUser = $this->identity;
+        $this->view->form = $form;
     }
 
     public function changePasswordAction()

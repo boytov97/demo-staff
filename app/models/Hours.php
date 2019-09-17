@@ -91,4 +91,50 @@ class Hours extends \Phalcon\Mvc\Model
         return parent::findFirst($parameters);
     }
 
+    /**
+     * Возвращает
+     *
+     * @param $createdAt
+     * @param $userId
+     * @return array|Hours|Hours[]|\Phalcon\Mvc\Model\ResultSetInterface
+     */
+    public function getByCreatedAt($createdAt, $userId)
+    {
+        $hours = self::find([
+            'conditions' => 'createdAt LIKE :createdAt: AND usersId = :id:',
+            'bind'       => [
+                'createdAt' => $createdAt,
+                'id'        => $userId
+            ]
+        ]);
+
+        return $hours ? $hours->toArray() : $hours;
+    }
+
+    public function getLateCountByCreatedAt($createdAt)
+    {
+        $lateCountPerMonth = self::find([
+            'conditions' => 'createdAt LIKE :createdAt: AND late = :late:',
+            'bind'       => [
+                'createdAt' => $createdAt,
+                'late'      => 1
+            ]
+        ]);
+
+        return $lateCountPerMonth ? $lateCountPerMonth->count() : $lateCountPerMonth;
+    }
+
+    public function getAuthLateCountByCreatedAt($createdAt, $userId)
+    {
+        $authUserLateCount = self::find([
+            'conditions' => 'createdAt LIKE :createdAt: AND usersId = :id: AND late = :late:',
+            'bind'       => [
+                'createdAt' => $createdAt,
+                'id'        => $userId,
+                'late'      => 1
+            ]
+        ]);
+
+        return $authUserLateCount ? $authUserLateCount->count() : $authUserLateCount;
+    }
 }

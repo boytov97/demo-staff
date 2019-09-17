@@ -129,8 +129,24 @@ class Users extends \Phalcon\Mvc\Model
         return parent::findFirst($parameters);
     }
 
-    public function getImagePath()
+    public function checkUniqueness($email)
     {
-        return '';
+        $user = Users::findFirst([
+            'conditions' => 'email = :email:',
+            'bind' => [
+                'email' => $email
+            ]
+        ]);
+
+        return $user;
+    }
+
+    public function getAll()
+    {
+        $users = (new self())->modelsManager->createBuilder()
+            ->from('Users')->orderBy('profilesId')->getQuery()
+            ->execute();
+
+        return $users;
     }
 }
