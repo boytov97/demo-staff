@@ -5,39 +5,34 @@ class TestingController extends ControllerBase
 
     public function indexAction()
     {
-        $hours = Hours::find([
-            'conditions' => 'createdAt = :createdAt:',
-            'bind' => [
-                'createdAt' => date('Y-m-d')
-            ]
-        ]);
+        $lateUsers = $this->modelsManager->createBuilder()
+            ->from('Users')
+            ->columns([
+            'Users.id',
+            'Users.name',
+            'Users.image',
+            'SUM(uh.late) AS beenLate',
+            ])
+            ->join('Hours', 'uh.usersId = Users.id', 'uh')
+            ->where('uh.late = 1')
+            ->groupBy('Users.id')->orderBy('SUM(late) DESC')->limit(3)->getQuery()
+            ->execute();
 
-        foreach ($hours as $hour) {
 
-            foreach ($hour->startEnds as $startEnd) {
-                if(!$startEnd->start && !$startEnd->stop) {
-                    $emptyStartEnd = StartEnd::findFirstById($startEnd->id);
-                    $emptyStartEnd->delete();
-                }
+        $post = $this->modelsManager->createBuilder()
+            ->from('Punch')
+            ->columns(['Punch.user_id','Punch.punch_date','Punch.start_time','Punch.stop_time','Punch.full_hours', 'Users.name', 'Users.active'])
+            ->where('MONTH(punch_date) = "'.$monthget.'"')
+            ->andWhere('YEAR(punch_date) = "'.$yearget.'"')
+            ->andWhere('Users.active = "Y"')
+            ->join('Users', 'Punch.user_id = Users.id')
+            ->orderBy(array('Punch.punch_date', 'Punch.user_id', 'Punch.start_time'))
+            ->getQuery()
+            ->execute();
 
-                if($startEnd->start && !$startEnd->stop) {
-                    $forgotten = StartEnd::findFirstById($startEnd->id);
-                    $forgotten->assign([
-                        'stop' => 'forgot'
-                    ]);
-
-                    $forgotten->save();
-
-                    $forgottenHour = Hours::findFirstById($hour->id);
-                    $forgottenHour->assign([
-                       'total' => '00:00:00',
-                       'less'  => '09:00:00'
-                    ]);
-
-                    $forgottenHour->save();
-                }
-            }
-        }
+        echo '<pre>';
+        print_r( $lateUsers );
+        echo '</pre>';
     }
 }
 
