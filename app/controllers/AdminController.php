@@ -2,17 +2,11 @@
 
 class AdminController extends ControllerBase
 {
-    public function initialize()
-    {
-        //$this->view->setTemplateBefore('admin');
-
-        return parent::initialize();
-    }
-
     public function indexAction()
     {
 
         $this->view->authUser = $this->identity;
+        $this->view->admin = true;
     }
 
     public function createUserAction()
