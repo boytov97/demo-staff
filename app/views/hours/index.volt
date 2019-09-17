@@ -20,49 +20,27 @@
                     {% endif %}
                 </div>
 
-                <div class="col-md-6 lates_statistics__wrapper">
-                    <p>Главные опоздуны</p>
+                {% if lateUsers is not empty %}
+                    <div class="col-md-6 lates_statistics__wrapper">
+                        <p>Главные опоздуны</p>
 
-                    <div class="late__card">
-                        <div class="late__image__wrapper">
-                            <img src="/staff/img/Elon-Musk-2010.jpg" alt="" class="late__image">
-                        </div>
+                        {% for lateUser in lateUsers %}
+                            <div class="late__card">
+                                <div class="late__image__wrapper">
+                                    {% if lateUser.image is not empty %}
+                                        {{ image(lateUser.image, 'alt': lateUser.name, 'class': 'late__image') }}
+                                    {% else %}
+                                        {{ image('img/default.jpg', 'alt': lateUser.name, 'class': 'late__image') }}
+                                    {% endif %}
+                                </div>
 
-                        <br>
-                        <p>Elon-Musk</p>
-                        <span>4 pаз</span>
+                                <br>
+                                <p>{{ lateUser.name }}</p>
+                                <span>{{ lateUser.beenLate }} pаз</span>
+                            </div>
+                        {% endfor %}
                     </div>
-
-                    <div class="late__card">
-                        <div class="late__image__wrapper">
-                            <img src="/staff/img/Elon-Musk-2010.jpg" alt="" class="late__image">
-                        </div>
-
-                        <br>
-                        <p>Elon-Musk</p>
-                        <span>4 pаз</span>
-                    </div>
-
-                    <div class="late__card">
-                        <div class="late__image__wrapper">
-                            <img src="/staff/img/Elon-Musk-2010.jpg" alt="" class="late__image">
-                        </div>
-
-                        <br>
-                        <p>Elon-Musk</p>
-                        <span>4 pаз</span>
-                    </div>
-
-                    <div class="late__card">
-                        <div class="late__image__wrapper">
-                            <img src="/staff/img/Elon-Musk-2010.jpg" alt="" class="late__image">
-                        </div>
-
-                        <br>
-                        <p>Elon-Musk</p>
-                        <span>4 pаз</span>
-                    </div>
-                </div>
+                {% endif %}
             </div>
 
             <div class="year-month_selector">

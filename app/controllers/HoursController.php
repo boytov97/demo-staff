@@ -53,6 +53,14 @@ class HoursController extends ControllerBase
         $hour = $this->create($currentDate);
         $startEnds = $this->getStartEndModel()->findByHourId($hour->id);
 
+        $hour->assign([
+            'total' => $this->dateTime->getTotalDifference($startEnds)
+        ]);
+
+        if(!$hour->save()) {
+            $this->flash->error($hour->getMessages());
+        }
+
         $lastStartTime = null;
         $startEndsCount = count($startEnds);
         $i = 0;
@@ -84,6 +92,7 @@ class HoursController extends ControllerBase
         $this->view->authUserlateCount = $this->getAuthUserLateCount($this->month, $this->year);
         $this->view->lateCountPerMonth = $this->getLateCountPerMonth($this->month, $this->year);
         $this->view->maxLate = $this->settings->getByKey('max_late');
+        $this->view->lateUsers = $this->getBeenLateUsers($this->month, $this->year);
     }
 
     public function updateAction($id, $startEndId)
@@ -335,13 +344,19 @@ class HoursController extends ControllerBase
      */
     protected function getPercentOfTotal($workingDaysCount, $totalSecondPerMonth)
     {
-        $workingSecondsCount = $workingDaysCount * ($this->hourForDay - 1) * 60 * 60;
+        $percentOfTotal = 0;
 
-        return round($totalSecondPerMonth / ($workingSecondsCount / 100), 2);
+        if ($totalSecondPerMonth >= 60) {
+
+            $workingSecondsCount = $workingDaysCount * ($this->hourForDay - 1) * 60 * 60;
+            $percentOfTotal = round($totalSecondPerMonth / ($workingSecondsCount / 100), 2);
+        }
+
+        return $percentOfTotal;
     }
 
     /**
-     *
+     * Возвращает сумму опаздании всех пользователей
      *
      * @param $month
      * @param $year
@@ -362,6 +377,13 @@ class HoursController extends ControllerBase
         return $lateCountPerMonth;
     }
 
+    /**
+     * Возвращает сумму опаздании аутентифицированного пользователя
+     *
+     * @param $month
+     * @param $year
+     * @return mixed
+     */
     protected function getAuthUserLateCount($month, $year)
     {
         $createdAt = $year . '-' . $month . '%';
@@ -376,6 +398,33 @@ class HoursController extends ControllerBase
         ])->count();
 
         return $authUserlateCount;
+    }
+
+    /**
+     * Возвращает три главных опаздунов
+     *
+     * @param $month
+     * @param $year
+     * @return mixed
+     */
+    protected function getBeenLateUsers($month, $year)
+    {
+        $createdAt = $year . '-' . $month . '%';
+
+        $lateUsers = $this->modelsManager->createBuilder()
+            ->from('Users')
+            ->columns([
+                'Users.id',
+                'Users.name',
+                'Users.image',
+                'SUM(uh.late) AS beenLate',
+            ])
+            ->join('Hours', 'uh.usersId = Users.id', 'uh')
+            ->where('uh.late = 1')->where('createdAt LIKE "'.$createdAt.'"')
+            ->groupBy('Users.id')->orderBy('SUM(late) DESC')->limit(3)->getQuery()
+            ->execute();
+
+        return $lateUsers;
     }
 
     protected function getStartEndModel()
