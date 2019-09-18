@@ -137,4 +137,17 @@ class Hours extends \Phalcon\Mvc\Model
 
         return $authUserLateCount ? $authUserLateCount->count() : $authUserLateCount;
     }
+
+    public function findFirstByUserIdAndCreatedAt($userId, $createdAt)
+    {
+        $hour = self::findFirst([
+            'usersId = ?0 AND createdAt = ?1',
+            'bind' => [
+                $userId,
+                $createdAt
+            ]
+        ]);
+
+        return $hour;
+    }
 }

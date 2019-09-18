@@ -43,124 +43,21 @@
                 {% endif %}
             </div>
 
-            <div class="year-month_selector">
-                <form action="{{ url(['for': 'hours-index']) }}" method="GET">
-                    <div class="year-month__wrapper">
-                        <select name="month" id="" onchange="this.form.submit();">
-                            {% for key, month in months %}
-                                <option value="{{ key }}" {{ (key == defaultMonth) ? 'selected' : '' }}>{{ month }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <div class="year-month__wrapper">
-                        <select name="year" id="" onchange="this.form.submit();">
-                            {% for key, year in years %}
-                                <option value="{{ key }}" {{ (year === defaultYear) ? 'selected' : '' }}>{{ year }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </form>
-            </div>
+            {{ partial('common/filter', [
+                'action': url(['for': 'hours-index']),
+                'months': months,
+                'years': years,
+                'defaultMonth': defaultMonth,
+                'defaultYear': defaultYear
+            ]) }}
 
             <div class="table__wrapper">
-                <table class="table table-bordered">
-                 {% if users is defined %}
-                      <thead>
-                        <tr>
-                          <th scope="col" style="width: 200px;">
-                            <a href="#" id="hide-show">Hide/Show</a>
-                          </th>
-                            {% for user in users %}
-                                 <th scope="col">{{ user.name }}</th>
-                            {% endfor %}
-                        </tr>
-                      </thead>
-
-                      <tbody class="working_table_list">
-                          {% for position, date in datesMonth %}
-                              <tr class="{{ (currentDate == date['date']) ? 'current_working_line' : 'full_day not_current_working_line' }}">
-                                  <td scope="row">
-                                      <center>
-                                          {{ position }} <br>
-                                          <span class="day_of_weeks">{{ date['day'] }}</span>
-                                      </center>
-                                  </td>
-
-                                  {% for user in users %}
-                                      <td>
-                                          <div class="hours__wrapper">
-                                              <input type="checkbox" disabled {{ date['working_day'] ? 'checked' : '' }}>
-
-                                              {% for hour in user.hours %}
-                                                    {% if hour.createdAt == date['date'] %}
-                                                        {% if user.id == authUser['id'] and currentDate === date['date'] %}
-                                                              <span class="{{ hour.late ? 'auth_user_is_late' : '' }}"></span>
-                                                              <input type="hidden" id="update-hours-link" value="{{ url(['for': 'hours-update-total', 'id': hour.id ]) }}">
-
-                                                              {% for startEnd in hour.startEnds %}
-                                                                  {% set endStop = startEnd.stop ? startEnd.stop :
-                                                                  '<a href="' ~
-                                                                  url(['for': 'hours-update', 'id': hour.id, 'startEndId': startEnd.id ])
-                                                                  ~ '" name="stop" class="update-hours">stop</a>' %}
-
-                                                                  <p class="counter-value__wrapper">
-                                                                      <span class="start-end_{{ startEnd.id }}">{{ startEnd.start ? startEnd.start ~ ' - ' ~ endStop :
-                                                                          '<a href="' ~
-                                                                          url(['for': 'hours-update', 'id': hour.id, 'startEndId': startEnd.id ])
-                                                                          ~ '" name="start" class="update-hours">start</a>' }}
-                                                                      </span>
-                                                                  </p>
-                                                              {% endfor %}
-
-                                                              <p class="counter-value__wrapper">
-                                                                  <span class="total-hour auth-user-total">
-                                                                      {% if hour.total is not empty %}
-                                                                          total: {{ hour.total }}
-                                                                      {% endif %}
-                                                                  </span>
-
-                                                                  <span class="less-hour auth-user-less">
-                                                                      {% if hour.less is not empty %}
-                                                                          less: {{ hour.less }}
-                                                                      {% endif %}
-                                                                  </span>
-                                                              </p>
-                                                        {% elseif currentDate !== date['date'] %}
-                                                            <span class="{{ hour.late ? 'user_is_late' : '' }}"></span>
-
-                                                              {% for startEnd in hour.startEnds %}
-                                                                  <p class="counter-value__wrapper">{{ startEnd.start }} -
-                                                                      {% if startEnd.stop === 'forgot' %}
-                                                                          <span class="forgotten">{{ startEnd.stop }}</span>
-                                                                      {% else %}
-                                                                          {{ startEnd.stop }}
-                                                                      {% endif %}
-                                                                  </p>
-                                                              {% endfor %}
-                                                              <p class="counter-value__wrapper">
-                                                                  {% if hour.total is not empty %}
-                                                                      <span class="total-hour">total: {{ hour.total }}</span>
-                                                                  {% endif %}
-
-                                                                  {% if hour.less is not empty %}
-                                                                      <span class="less-hour">less: {{ hour.less }}</span>
-                                                                  {% endif %}
-                                                              </p>
-                                                        {% endif %}
-                                                     {% endif %}
-                                              {% endfor %}
-                                          </div>
-                                      </td>
-                                  {% endfor %}
-                              </tr>
-                          {% endfor %}
-                      </tbody>
-                    </table>
-                 {% else %}
-                     <hr>
-                     <p>No users</p>
-                 {% endif %}
+                {{ partial('common/staffTable', [
+                    'users': users,
+                    'datesMonth': datesMonth,
+                    'currentDate': currentDate,
+                    'authUser': authUser
+                ]) }}
             </div>
         </div>
     </div>
@@ -168,11 +65,6 @@
 
 <script>
     $(document).ready(function () {
-        $('#hide-show').on('click', function () {
-            $('.full_day').each(function () {
-                $(this).toggleClass('not_current_working_line');
-            });
-        });
 
         var updateTotalInterval;
 
@@ -196,7 +88,18 @@
                     updateActions['action'] = 'start';
 
                     startUpdateInterval();
-                    $('.auth-user-less').html('');
+
+                    var user_less = '.user-less_';
+
+                    $.each(element.attr('data-href').split('/'), function (key, value) {
+                        console.log(key + '-----' + value);
+
+                        if (key === 3 && $.isNumeric(value)) {
+                            user_less += value;
+                        }
+                    });
+
+                    $(user_less).html('');
                 }
 
                 if(element.attr('name') === 'stop') {
@@ -213,7 +116,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: element.attr('href'),
+                url: element.attr('data-href'),
                 data: updateActions,
                 beforeSend: function() {
                     if(element !== null) {
@@ -232,7 +135,7 @@
                             $(startEnd).html(value.start + ' - ' + $(startEnd).html());
                         } else {
                             if(value.stop === null && value.start === null && parsedData.updateUrl !== null) {
-                                $('.new-startEnd').last().append('<span class="start-end_'+ value.id +'"><a href="' + parsedData.updateUrl + '" name="start" class="update-hours" >start</a></span>');
+                                $('.new-startEnd').last().append('<span class="start-end_'+ value.id +'"><a data-href="' + parsedData.updateUrl + '" name="start" class="update-hours" >start</a></span>');
                             } else {
                                 $(startEnd).html(value.start + ' - ' + value.stop);
 
@@ -243,11 +146,13 @@
                         }
 
                         if (parsedData.total) {
-                            $('.auth-user-total').html('total: ' + parsedData.total);
+                            var userTotal = '.user-total_' + parsedData.hourId;
+                            $(userTotal).html('total: ' + parsedData.total);
                         }
 
                         if (parsedData.less) {
-                            $('.auth-user-less').html('less: ' + parsedData.less);
+                            var userLess = '.user-less_' + parsedData.hourId;
+                            $(userLess).html('less: ' + parsedData.less);
                         }
                     });
 
@@ -279,7 +184,8 @@
                     if (isJson(data)) {
                         var parsedData = $.parseJSON(data);
 
-                        $('.auth-user-total').html('total: ' + parsedData.total);
+                        var userTotal = '.user-total_' + parsedData.hourId;
+                        $(userTotal).html('total: ' + parsedData.total);
                     }
                 },
                 error: function (errors) {

@@ -1,18 +1,101 @@
 <?php
 
+use Phalcon\Http\Response;
+
 class AdminController extends ControllerBase
 {
-    public function initialize()
+    public $hourForDay = 9;
+
+    protected $month;
+    
+    protected $year;
+
+    public function beforeExecuteRoute()
     {
-        //$this->view->setTemplateBefore('admin');
-
-        return parent::initialize();
+        $this->month = date('m');
+        $this->year = date('Y');
     }
-
+    
     public function indexAction()
     {
+        $currentDate = date('Y-m-d');
 
+        if ($month = $this->request->get('month')) {
+            $this->month = $month;
+        }
+
+        if ($year = $this->request->get('year')) {
+            $this->year = $year;
+        }
+        
+        $users = Users::find();
+
+        $this->createCounter($users, $currentDate);
+
+        $notWorkingDays = $this->getNotWorkingDaysModel()->getAllByMonth($this->month);
+        $datesMonth = $this->dateTime->getDates($this->month, $this->year, $notWorkingDays);
+
+        $this->view->currentDate = date('Y-m-d');
         $this->view->authUser = $this->identity;
+        $this->view->admin = true;
+        $this->view->users = $users;
+        $this->view->years = $this->dateTime->getYears();
+        $this->view->months = $this->dateTime->getMonths();
+        $this->view->defaultYear = $this->year;
+        $this->view->defaultMonth = $this->month;
+        $this->view->datesMonth = $datesMonth;
+    }
+
+    public function updateStartEndAction($id)
+    {
+        if ($this->request->isPost()) {
+            $response = new Response();
+            $message = [];
+
+            $startEnd  = StartEnd::findFirstById($id);
+
+            $startEnd->assign([
+                'start' => $this->request->getPost('start'),
+                'stop'  => $this->request->getPost('stop')
+            ]);
+
+            if(!$startEnd->save()) {
+                $message = $startEnd->getMessages();
+            } else {
+
+                $hour      = Hours::findFirstById($startEnd->hour->id);
+                $startEnds = $this->getStartEndModel()->findByHourId($hour->id);
+                $total     = $this->dateTime->getTotalDifference($startEnds);
+                $entity['total'] = $total;
+
+                $notWorkingDays = $this->getNotWorkingDaysModel()->getAllByMonth($this->month);
+
+                if (!$this->dateTime->isNotWorkingDay($hour->createdAt, $notWorkingDays)) {
+                    $entity['less'] = (($this->hourForDay * 3600) > $this->dateTime->parseHour($total)) ?
+                        $this->dateTime->getDiffBySecond($this->hourForDay * 3600, $this->dateTime->parseHour($total)) : null;
+                }
+
+                $hour->assign($entity);
+
+                if(!$hour->save()) {
+                    $message = $hour->getMessages();
+                }
+            }
+
+            if (count($message)) {
+                $response->setStatusCode(500, 'Internal Server Error');
+                $response->setContent(json_encode($startEnd->getMessages()));
+            } else {
+
+                $response->setStatusCode(200, 'OK');
+                $response->setContent(json_encode([
+                    'hourId' => $startEnd->hour->id,
+                    'entity'  => $entity
+                ]));
+            }
+
+            return $response;
+        }
     }
 
     public function createUserAction()
@@ -110,9 +193,49 @@ class AdminController extends ControllerBase
         $this->view->users = $users;
     }
 
+    protected function createCounter($users, $currentDate)
+    {
+        foreach ($users as $user) {
+            $hour = $this->getHoursModel()->findFirstByUserIdAndCreatedAt($user->id, $currentDate);
+
+            if (!$hour) {
+                $hour = new Hours();
+
+                $hour->usersId = $user->id;
+                $hour->createdAt = $currentDate;
+
+                if (!$hour->save()) {
+                    $this->flash->error($hour->getMessages());
+                }
+
+                $startEnd = new StartEnd();
+                $startEnd->hourId = $hour->id;
+
+                if (!$startEnd->save()) {
+                    $this->flash->error($hour->getMessages());
+                }
+            }
+        }
+    }
+
     protected function getUsersModel()
     {
         return new Users();
+    }
+
+    protected function getNotWorkingDaysModel()
+    {
+        return new NotWorkingDays();
+    }
+
+    protected function getStartEndModel()
+    {
+        return new StartEnd();
+    }
+
+    protected function getHoursModel()
+    {
+        return new Hours();
     }
 }
 

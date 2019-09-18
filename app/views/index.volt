@@ -17,6 +17,7 @@
 
         {{ javascript_include('bootstrap/js/bootstrap.js') }}
         {{ javascript_include('js/script.js') }}
+        {{ javascript_include('js/admin.js') }}
 
 	</body>
 </html>
