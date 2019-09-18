@@ -3,7 +3,7 @@
         <thead>
             <tr>
                 <th scope="col" style="width: 200px;">
-                    <a href="#" id="hide-show">Hide/Show</a>
+                    <a data-href="" id="hide-show" class="hide-show">Hide/Show</a>
                 </th>
 
                 {% for user in users %}
@@ -60,7 +60,7 @@
                                                                            class="start-end__input input_without_border" step="1" required> -
 
                                                                     <input type="time" name="stop" value="{{ startEnd.stop }}"
-                                                                           class="start-end__input input_without_border" step="0.1" required>
+                                                                           class="start-end__input input_without_border" step="1" required>
 
                                                                     <a data-href="" class="start_end_edit" title="edit">
                                                                         <i class="fa fa-pencil"></i>

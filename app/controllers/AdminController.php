@@ -10,6 +10,14 @@ class AdminController extends ControllerBase
     
     protected $year;
 
+    protected $validation;
+
+    public function initialize()
+    {
+        $this->validation = new AdminValidation();
+        parent::initialize();
+    }
+
     public function beforeExecuteRoute()
     {
         $this->month = date('m');
@@ -49,49 +57,65 @@ class AdminController extends ControllerBase
     public function updateStartEndAction($id)
     {
         if ($this->request->isPost()) {
+            $entity   = [];
+            $messages = [];
+
+            $validationMessages = $this->validation->validate($this->request->getPost());
             $response = new Response();
-            $message = [];
 
-            $startEnd  = StartEnd::findFirstById($id);
+            $validationArrayMessages = [];
 
-            $startEnd->assign([
-                'start' => $this->request->getPost('start'),
-                'stop'  => $this->request->getPost('stop')
-            ]);
+            foreach ($validationMessages as $validationMessage) {
+                $validationArrayMessages[] = $validationMessage->getMessage();
+            }
 
-            if(!$startEnd->save()) {
-                $message = $startEnd->getMessages();
-            } else {
+            if(!count($validationArrayMessages)) {
 
-                $hour      = Hours::findFirstById($startEnd->hour->id);
-                $startEnds = $this->getStartEndModel()->findByHourId($hour->id);
-                $total     = $this->dateTime->getTotalDifference($startEnds);
-                $entity['total'] = $total;
+                $assignment = [];
 
-                $notWorkingDays = $this->getNotWorkingDaysModel()->getAllByMonth($this->month);
+                $startEnd  = StartEnd::findFirstById($id);
 
-                if (!$this->dateTime->isNotWorkingDay($hour->createdAt, $notWorkingDays)) {
-                    $entity['less'] = (($this->hourForDay * 3600) > $this->dateTime->parseHour($total)) ?
-                        $this->dateTime->getDiffBySecond($this->hourForDay * 3600, $this->dateTime->parseHour($total)) : null;
-                }
+                $startEnd->assign([
+                    'start' => $this->request->getPost('start'),
+                    'stop'  => $this->request->getPost('stop')
+                ]);
 
-                $hour->assign($entity);
+                if(!$startEnd->save()) {
+                    $messages = $startEnd->getMessages();
+                } else {
 
-                if(!$hour->save()) {
-                    $message = $hour->getMessages();
+                    $hour      = Hours::findFirstById($startEnd->hour->id);
+                    $startEnds = $this->getStartEndModel()->findByHourId($hour->id);
+                    $total     = $this->dateTime->getTotalDifference($startEnds);
+                    $assignment['total'] = $total;
+
+                    $notWorkingDays = $this->getNotWorkingDaysModel()->getAllByMonth($this->month);
+
+                    if (!$this->dateTime->isNotWorkingDay($hour->createdAt, $notWorkingDays)) {
+                        $assignment['less'] = (($this->hourForDay * 3600) > $this->dateTime->parseHour($total)) ?
+                            $this->dateTime->getDiffBySecond($this->hourForDay * 3600, $this->dateTime->parseHour($total)) : null;
+                    }
+
+                    $hour->assign($assignment);
+
+                    if(!$hour->save()) {
+                        $messages = $hour->getMessages();
+                    } else {
+                        $entity['hourId'] = $startEnd->hour->id;
+                        $entity['assignment'] = $assignment;
+                    }
                 }
             }
 
-            if (count($message)) {
+
+            if (count($messages)) {
                 $response->setStatusCode(500, 'Internal Server Error');
-                $response->setContent(json_encode($startEnd->getMessages()));
+                $response->setContent(json_encode($messages));
             } else {
+                $entity['validation'] = $validationArrayMessages;
 
                 $response->setStatusCode(200, 'OK');
-                $response->setContent(json_encode([
-                    'hourId' => $startEnd->hour->id,
-                    'entity'  => $entity
-                ]));
+                $response->setContent(json_encode($entity));
             }
 
             return $response;
