@@ -31,6 +31,10 @@ body {
     margin: 50px 0;
 }
 
+.hide-show {
+    cursor: pointer;
+}
+
 .day_of_weeks {
     padding: 5px 15px;
     margin: 0 10px;
@@ -230,6 +234,10 @@ body {
     height: 15px;
     margin: 1px;
     text-align: center;
+}
+
+.start_end_edit {
+    cursor: pointer;
 }
 
 @media screen and (max-width: 430px) {
