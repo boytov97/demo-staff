@@ -57,7 +57,7 @@ class HoursController extends ControllerBase
             'total' => $this->dateTime->getTotalDifference($startEnds)
         ]);
 
-        if(!$hour->save()) {
+        if (!$hour->save()) {
             $this->flash->error($hour->getMessages());
         }
 
@@ -70,7 +70,8 @@ class HoursController extends ControllerBase
             }
         }
 
-        $datesMonth = $this->dateTime->getDates($this->month, $this->year, $this->getNotWorkingDays($this->month));
+        $notWorkingDays = $this->getNotWorkingDaysModel()->getAllByMonth($this->month);
+        $datesMonth = $this->dateTime->getDates($this->month, $this->year, $notWorkingDays);
         $totalSecondPerMonth = $this->getTotalSecondPerMonth($this->month, $this->year);
         $workingDaysCount = $this->getWorkingDaysCount($datesMonth);
 
@@ -151,7 +152,9 @@ class HoursController extends ControllerBase
                 $startEnds = $this->getStartEndModel()->findByHourId($hour->id);
                 $this->total = $this->dateTime->getTotalDifference($startEnds);
 
-                if (!$this->dateTime->isNotWorkingDay(date('H:i:s'), $this->getNotWorkingDays($this->month))) {
+                $notWorkingDays = $this->getNotWorkingDaysModel()->getAllByMonth($this->month);
+
+                if (!$this->dateTime->isNotWorkingDay(date('H:i:s'), $notWorkingDays)) {
                     $this->less = (($this->hourForDay * 3600) > $this->dateTime->parseHour($this->total)) ?
                         $this->dateTime->getDiffBySecond($this->hourForDay * 3600, $this->dateTime->parseHour($this->total)) : null;
                 }
@@ -175,9 +178,11 @@ class HoursController extends ControllerBase
 
                 $response->setStatusCode(200, 'OK');
                 $response->setContent(json_encode([
+                    'success'   => true,
                     'updateUrl' => $this->updateUrl,
                     'action'    => $this->request->getPost('action'),
                     'startEnds' => $hour->startEnds,
+                    'hourId'    => $hour->id,
                     'total'     => $this->total,
                     'less'      => $this->less
                 ]));
@@ -205,7 +210,8 @@ class HoursController extends ControllerBase
 
             $response->setStatusCode(200, 'OK');
             $response->setContent(json_encode([
-                'total' => $this->dateTime->getTotalDifference($startEnds)
+                'hourId' => $hour->id,
+                'total'  => $this->dateTime->getTotalDifference($startEnds)
             ]));
         }
 
@@ -220,13 +226,7 @@ class HoursController extends ControllerBase
      */
     protected function create($currentDate)
     {
-        $hour = Hours::findFirst([
-            'usersId = ?0 AND createdAt = ?1',
-            'bind' => [
-                $this->identity['id'],
-                $currentDate
-            ]
-        ]);
+        $hour = $this->getModel()->findFirstByUserIdAndCreatedAt($this->identity['id'], $currentDate);
 
         if (!$hour) {
             $hour = new Hours();
@@ -247,24 +247,6 @@ class HoursController extends ControllerBase
         }
 
         return $hour;
-    }
-
-    /**
-     * Возвращает не рабочие дни который добавил админ
-     *
-     * @param $month
-     * @return NotWorkingDays|NotWorkingDays[]|\Phalcon\Mvc\Model\ResultSetInterface
-     */
-    protected function getNotWorkingDays($month)
-    {
-        $items = NotWorkingDays::find([
-            'conditions' => 'month = :month:',
-            'bind'       => [
-                'month' => $month,
-            ]
-        ]);
-
-        return $items;
     }
 
     /**
@@ -396,7 +378,7 @@ class HoursController extends ControllerBase
                 'SUM(uh.late) AS beenLate',
             ])
             ->join('Hours', 'uh.usersId = Users.id', 'uh')
-            ->where('uh.late = 1')->where('createdAt LIKE "'.$createdAt.'"')
+            ->where('uh.late = 1')->where('createdAt LIKE "' . $createdAt . '"')
             ->groupBy('Users.id')->orderBy('SUM(late) DESC')->limit(3)->getQuery()
             ->execute();
 
@@ -411,5 +393,10 @@ class HoursController extends ControllerBase
     protected function getStartEndModel()
     {
         return new StartEnd();
+    }
+
+    protected function getNotWorkingDaysModel()
+    {
+        return new NotWorkingDays();
     }
 }

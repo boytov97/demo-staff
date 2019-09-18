@@ -134,4 +134,12 @@ $router->add(
     ]
 )->setName('admin-create-user');
 
+$router->addPost(
+    '/admin/{id}/update-start-end/',
+    [
+        'controller' => 'admin',
+        'action'     => 'updateStartEnd',
+    ]
+)->setName('admin-update-start-end');
+
 return $router;

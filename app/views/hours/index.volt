@@ -65,11 +65,6 @@
 
 <script>
     $(document).ready(function () {
-        $('#hide-show').on('click', function () {
-            $('.full_day').each(function () {
-                $(this).toggleClass('not_current_working_line');
-            });
-        });
 
         var updateTotalInterval;
 
@@ -93,7 +88,18 @@
                     updateActions['action'] = 'start';
 
                     startUpdateInterval();
-                    $('.auth-user-less').html('');
+
+                    var user_less = '.user-less_';
+
+                    $.each(element.attr('data-href').split('/'), function (key, value) {
+                        console.log(key + '-----' + value);
+
+                        if (key === 3 && $.isNumeric(value)) {
+                            user_less += value;
+                        }
+                    });
+
+                    $(user_less).html('');
                 }
 
                 if(element.attr('name') === 'stop') {
@@ -110,7 +116,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: element.attr('href'),
+                url: element.attr('data-href'),
                 data: updateActions,
                 beforeSend: function() {
                     if(element !== null) {
@@ -129,7 +135,7 @@
                             $(startEnd).html(value.start + ' - ' + $(startEnd).html());
                         } else {
                             if(value.stop === null && value.start === null && parsedData.updateUrl !== null) {
-                                $('.new-startEnd').last().append('<span class="start-end_'+ value.id +'"><a href="' + parsedData.updateUrl + '" name="start" class="update-hours" >start</a></span>');
+                                $('.new-startEnd').last().append('<span class="start-end_'+ value.id +'"><a data-href="' + parsedData.updateUrl + '" name="start" class="update-hours" >start</a></span>');
                             } else {
                                 $(startEnd).html(value.start + ' - ' + value.stop);
 
@@ -140,11 +146,13 @@
                         }
 
                         if (parsedData.total) {
-                            $('.auth-user-total').html('total: ' + parsedData.total);
+                            var userTotal = '.user-total_' + parsedData.hourId;
+                            $(userTotal).html('total: ' + parsedData.total);
                         }
 
                         if (parsedData.less) {
-                            $('.auth-user-less').html('less: ' + parsedData.less);
+                            var userLess = '.user-less_' + parsedData.hourId;
+                            $(userLess).html('less: ' + parsedData.less);
                         }
                     });
 
@@ -176,7 +184,8 @@
                     if (isJson(data)) {
                         var parsedData = $.parseJSON(data);
 
-                        $('.auth-user-total').html('total: ' + parsedData.total);
+                        var userTotal = '.user-total_' + parsedData.hourId;
+                        $(userTotal).html('total: ' + parsedData.total);
                     }
                 },
                 error: function (errors) {

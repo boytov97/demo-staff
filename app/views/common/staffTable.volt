@@ -29,66 +29,120 @@
 
                                 {% for hour in user.hours %}
                                     {% if hour.createdAt == date['date'] %}
-                                        {% if admin is defined and admin %}
 
-                                        {% else %}
-                                            {% if user.id == authUser['id'] and currentDate === date['date'] %}
+                                            {% if user.id == authUser['id'] and currentDate === date['date'] or admin is defined and admin and currentDate === date['date']  %}
                                                 <span class="{{ hour.late ? 'auth_user_is_late' : '' }}"></span>
                                                 <input type="hidden" id="update-hours-link"
                                                        value="{{ url(['for': 'hours-update-total', 'id': hour.id ]) }}">
 
                                                 {% for startEnd in hour.startEnds %}
-                                                    {% set endStop = startEnd.stop ? startEnd.stop :
-                                                    '<a href="' ~
-                                                    url(['for': 'hours-update', 'id': hour.id, 'startEndId': startEnd.id ])
-                                                    ~ '" name="stop" class="update-hours">stop</a>' %}
 
-                                                    <p class="counter-value__wrapper">
-                                                      <span class="start-end_{{ startEnd.id }}">{{ startEnd.start ? startEnd.start ~ ' - ' ~ endStop :
-                                                          '<a href="' ~
-                                                          url(['for': 'hours-update', 'id': hour.id, 'startEndId': startEnd.id ])
-                                                          ~ '" name="start" class="update-hours">start</a>' }}
-                                                      </span>
-                                                    </p>
+                                                    {% if loop.last %}
+                                                        {% set endStop = startEnd.stop ? startEnd.stop :
+                                                            '<a data-href="' ~
+                                                            url(['for': 'hours-update', 'id': hour.id, 'startEndId': startEnd.id ])
+                                                            ~ '" name="stop" class="update-hours">stop</a>' %}
+
+                                                        <div class="counter-value__wrapper">
+                                                            <span class="start-end_{{ startEnd.id }}">{{ startEnd.start ? startEnd.start ~ ' - ' ~ endStop :
+                                                                  '<a data-href="' ~
+                                                                  url(['for': 'hours-update', 'id': hour.id, 'startEndId': startEnd.id ])
+                                                                  ~ '" name="start" class="update-hours">start</a>' }}
+                                                            </span>
+                                                        </div>
+                                                    {% else %}
+                                                        <div class="counter-value__wrapper">
+                                                            {% if admin is defined and admin %}
+                                                                <form action="{{ url(['for': 'admin-update-start-end', 'id': startEnd.id]) }}"
+                                                                      method="POST" class="start-end__form">
+
+                                                                    <input type="time" name="start" value="{{ startEnd.start }}"
+                                                                           class="start-end__input input_without_border" step="1" required> -
+
+                                                                    <input type="time" name="stop" value="{{ startEnd.stop }}"
+                                                                           class="start-end__input input_without_border" step="0.1" required>
+
+                                                                    <a data-href="" class="start_end_edit" title="edit">
+                                                                        <i class="fa fa-pencil"></i>
+                                                                    </a>
+
+                                                                    <button class="input-group-addon btn start_end_save hidden_start-end_btn"
+                                                                            title="{{ (user.active === 'N') ? 'activate' : 'deactivate' }}">
+                                                                        <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                                                                    </button>
+                                                                </form>
+                                                            {% else %}
+                                                                <span class="start-end_{{ startEnd.id }}">
+                                                                    {{ startEnd.start }} - {{ startEnd.stop }}
+                                                                </span>
+                                                            {% endif %}
+                                                        </div>
+                                                    {% endif %}
                                                 {% endfor %}
 
-                                                <p class="counter-value__wrapper">
-                                                    <span class="total-hour auth-user-total">
+                                                <div class="counter-value__wrapper">
+                                                    <span class="total-hour user-total_{{ hour.id }}">
                                                         {% if hour.total is not empty %}
                                                             total: {{ hour.total }}
                                                         {% endif %}
                                                     </span>
 
-                                                    <span class="less-hour auth-user-less">
+                                                    <span class="less-hour user-less_{{ hour.id }}">
+                                                        {% if hour.less is not empty %}
+                                                            less: {{ hour.less }}
+                                                        {% endif %}
+                                                    </span>
+                                                </div>
+                                            {% elseif currentDate !== date['date'] %}
+                                                <span class="{{ hour.late ? 'user_is_late' : '' }}"></span>
+
+                                                {% for startEnd in hour.startEnds %}
+                                                    {% if admin is defined and admin %}
+                                                        <div class="counter-value__wrapper">
+                                                            <form action="{{ url(['for': 'admin-update-start-end', 'id': startEnd.id]) }}"
+                                                                method="POST" class="start-end__form">
+
+                                                                <input type="time" name="start" value="{{ startEnd.start }}"
+                                                                       class="start-end__input input_without_border" step="1" required> -
+
+                                                                <input type="time" name="stop" value="{{ startEnd.stop }}"
+                                                                       class="start-end__input input_without_border" step="0.1" required>
+
+                                                                <a data-href="" class="start_end_edit" title="edit">
+                                                                    <i class="fa fa-pencil"></i>
+                                                                </a>
+
+                                                                <button class="input-group-addon btn start_end_save hidden_start-end_btn"
+                                                                        title="{{ (user.active === 'N') ? 'activate' : 'deactivate' }}">
+                                                                    <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    {% else %}
+                                                        <div class="counter-value__wrapper">
+                                                            {{ startEnd.start }} -
+                                                            {% if startEnd.stop === 'forgot' %}
+                                                                <span class="forgotten">{{ startEnd.stop }}</span>
+                                                            {% else %}
+                                                                {{ startEnd.stop }}
+                                                            {% endif %}
+                                                        </div>
+                                                    {% endif %}
+                                                {% endfor %}
+
+                                                <p class="counter-value__wrapper">
+                                                    {% if hour.total is not empty %}
+                                                        <span class="total-hour user-total_{{ hour.id }}">total: {{ hour.total }}</span>
+                                                    {% endif %}
+
+                                                    <span class="less-hour user-less_{{ hour.id }}">
                                                         {% if hour.less is not empty %}
                                                             less: {{ hour.less }}
                                                         {% endif %}
                                                     </span>
                                                 </p>
-                                            {% elseif currentDate !== date['date'] %}
-                                                <span class="{{ hour.late ? 'user_is_late' : '' }}"></span>
-
-                                                {% for startEnd in hour.startEnds %}
-                                                    <p class="counter-value__wrapper">{{ startEnd.start }} -
-                                                        {% if startEnd.stop === 'forgot' %}
-                                                            <span class="forgotten">{{ startEnd.stop }}</span>
-                                                        {% else %}
-                                                            {{ startEnd.stop }}
-                                                        {% endif %}
-                                                    </p>
-                                                {% endfor %}
-
-                                                <p class="counter-value__wrapper">
-                                                    {% if hour.total is not empty %}
-                                                        <span class="total-hour">total: {{ hour.total }}</span>
-                                                    {% endif %}
-
-                                                    {% if hour.less is not empty %}
-                                                        <span class="less-hour">less: {{ hour.less }}</span>
-                                                    {% endif %}
-                                                </p>
                                             {% endif %}
-                                        {% endif %}
+
                                     {% endif %}
                                 {% endfor %}
                             </div>

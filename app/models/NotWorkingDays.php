@@ -68,4 +68,21 @@ class NotWorkingDays extends \Phalcon\Mvc\Model
         return parent::findFirst($parameters);
     }
 
+    /**
+     *
+     *
+     * @param $month
+     * @return NotWorkingDays|NotWorkingDays[]|\Phalcon\Mvc\Model\ResultSetInterface
+     */
+    public function getAllByMonth($month)
+    {
+        $items = self::find([
+            'conditions' => 'month = :month:',
+            'bind'       => [
+                'month' => $month,
+            ]
+        ]);
+
+        return $items;
+    }
 }
