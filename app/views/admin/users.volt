@@ -5,6 +5,11 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="table__wrapper">
+                    {{ partial('admin/common/listCreateLinks', [
+                        'listUrl': url(['for': 'admin-users']),
+                        'createUrl': url(['for': 'admin-create-user'])
+                    ]) }}
+
                     <table class="table table-bordered">
                         <thead>
                             <tr>
@@ -31,7 +36,7 @@
                                         {% endif %}
                                     </td>
                                     <td>{{ user.profile.name }}</td>
-                                    <td>
+                                    <td class="action__column">
                                         <div class="action__wrapper">
                                             <a href="{{ url(['for': 'admin-users-edit', 'id': user.id]) }}" class="input-group-addon btn bg-red edit__icon_link" title="edit">
                                                 <i class="fa fa-pencil"></i>

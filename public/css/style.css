@@ -205,8 +205,18 @@ body {
     color: #fff;
 }
 
-.edit__icon_link:hover, .start_end_save:hover {
+.delete__icon_link {
+    padding: 3px 5px;
+    background: red;
+    color: #fff;
+}
+
+.edit__icon_link:hover, .start_end_save:hover, .delete__icon_link:hover {
     color: #ccc;
+}
+
+.action__column {
+    text-align: center;
 }
 
 .action__wrapper {
@@ -238,6 +248,27 @@ body {
 
 .start_end_edit {
     cursor: pointer;
+}
+
+.admin_stop_dtn {
+    display: inline-block;
+    margin: 10px 0;
+}
+
+.middle_wrapper_block {
+    max-width: 700px;
+    width: 100%;
+    margin: 40px auto;
+}
+
+.admin_common_links {
+    width: 100%;
+    text-align: center;
+    height: 45px;
+}
+
+.admin_common_links a {
+    padding: 5px 10px;
 }
 
 @media screen and (max-width: 430px) {

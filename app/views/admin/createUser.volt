@@ -5,6 +5,11 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="create-user__wrapper">
+                    {{ partial('admin/common/listCreateLinks', [
+                        'listUrl': url(['for': 'admin-users']),
+                        'createUrl': url(['for': 'admin-create-user'])
+                    ]) }}
+
                     <form action="{{ action }}" method="POST">
                         <div class="form-group">
                             <label for="nameInput">Name</label>

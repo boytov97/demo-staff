@@ -69,7 +69,7 @@ class NotWorkingDays extends \Phalcon\Mvc\Model
     }
 
     /**
-     *
+     * Возвращает все не рабочие дни который админ указал и все праздники
      *
      * @param $month
      * @return NotWorkingDays|NotWorkingDays[]|\Phalcon\Mvc\Model\ResultSetInterface
@@ -84,5 +84,17 @@ class NotWorkingDays extends \Phalcon\Mvc\Model
         ]);
 
         return $items;
+    }
+
+    public function getAllNotHoliday()
+    {
+        $notWorkingDays = self::find([
+            'conditions' => 'holiday = :holiday:',
+            'bind'       => [
+                'holiday' => 'N',
+            ]
+        ]);
+
+        return $notWorkingDays;
     }
 }

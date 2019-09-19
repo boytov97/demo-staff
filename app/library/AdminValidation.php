@@ -2,6 +2,7 @@
 
 use Phalcon\Validation;
 use Phalcon\Validation\Validator\PresenceOf;
+use \Phalcon\Validation\Validator\Callback;
 
 class AdminValidation extends Validation
 {
@@ -18,9 +19,19 @@ class AdminValidation extends Validation
 
         $this->add(
             'stop',
-            new PresenceOf(
+            new Callback(
                 [
-                    'message' => 'The end field is required',
+                    'callback' => function($post) {
+                        if(isset($post['stop'])) {
+                            return new PresenceOf(
+                                [
+                                    'message' => 'The end field is required',
+                                ]
+                            );
+                        }
+
+                        return true;
+                    }
                 ]
             )
         );

@@ -6,6 +6,8 @@ class AdminController extends ControllerBase
 {
     public $hourForDay = 9;
 
+    protected $beginning = '09:00:00';
+
     protected $month;
     
     protected $year;
@@ -86,12 +88,31 @@ class AdminController extends ControllerBase
 
                     $hour      = Hours::findFirstById($startEnd->hour->id);
                     $startEnds = $this->getStartEndModel()->findByHourId($hour->id);
+                    $firstStartEnd = $this->getStartEndModel()->findFirstByHourId($hour->id);
                     $total     = $this->dateTime->getTotalDifference($startEnds);
                     $assignment['total'] = $total;
 
-                    $notWorkingDays = $this->getNotWorkingDaysModel()->getAllByMonth($this->month);
+                    if($firstStartEnd->id == $id) {
+                        $beginning = $this->getSettingsModel()->getByKey('beginning') ?: $this->beginning;
 
-                    if (!$this->dateTime->isNotWorkingDay($hour->createdAt, $notWorkingDays)) {
+                        if (strtotime($beginning) < strtotime($this->request->getPost('start'))) {
+                            $assignment['late'] = 1;
+                        } else {
+                            $assignment['late'] = 0;
+                        }
+                    }
+
+                    $notWorkingDays = $this->getNotWorkingDaysModel()->getAllByMonth($this->month);
+                    $lastStopTime = null;
+                    $startEndsCount = count($startEnds);
+                    $i = 0;
+                    foreach ($startEnds as $key => $startEnd) {
+                        if (++$i === $startEndsCount) {
+                            $lastStopTime = $startEnd->stop;
+                        }
+                    }
+
+                    if (!$this->dateTime->isNotWorkingDay($hour->createdAt, $notWorkingDays) && $lastStopTime) {
                         $assignment['less'] = (($this->hourForDay * 3600) > $this->dateTime->parseHour($total)) ?
                             $this->dateTime->getDiffBySecond($this->hourForDay * 3600, $this->dateTime->parseHour($total)) : null;
                     }
@@ -106,7 +127,6 @@ class AdminController extends ControllerBase
                     }
                 }
             }
-
 
             if (count($messages)) {
                 $response->setStatusCode(500, 'Internal Server Error');
@@ -260,6 +280,11 @@ class AdminController extends ControllerBase
     protected function getHoursModel()
     {
         return new Hours();
+    }
+
+    protected function getSettingsModel()
+    {
+        return new Settings();
     }
 }
 
