@@ -154,6 +154,11 @@
                             var userLess = '.user-less_' + parsedData.hourId;
                             $(userLess).html('less: ' + parsedData.less);
                         }
+
+                        if (parsedData.late) {
+                            var userLateMark = '.user_late_mark_' + parsedData.hourId;
+                            $(userLateMark).parent().parent().css('background-color', '#ffb9b2');
+                        }
                     });
 
                     initializeStartAndStop();

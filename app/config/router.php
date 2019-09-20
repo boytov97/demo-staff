@@ -174,4 +174,12 @@ $router->addPost(
     ]
 )->setName('settings-create-update');
 
+$router->add(
+    '/admin/permissions',
+    [
+        'controller' => 'permissions',
+        'action'     => 'index',
+    ]
+)->setName('permissions-index');
+
 return $router;

@@ -2,6 +2,11 @@
 
 class UserControlController extends ControllerBase
 {
+    public function indexAction()
+    {
+
+    }
+
     public function resetPasswordAction()
     {
         $code = $this->dispatcher->getParam('code');

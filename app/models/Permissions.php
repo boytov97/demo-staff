@@ -1,8 +1,6 @@
 <?php
 
-use Phalcon\Mvc\Model\Relation;
-
-class Profiles extends \Phalcon\Mvc\Model
+class Permissions extends \Phalcon\Mvc\Model
 {
 
     /**
@@ -13,9 +11,21 @@ class Profiles extends \Phalcon\Mvc\Model
 
     /**
      *
+     * @var integer
+     */
+    public $profilesId;
+
+    /**
+     *
      * @var string
      */
-    public $name;
+    public $resource;
+
+    /**
+     *
+     * @var string
+     */
+    public $action;
 
     /**
      * Initialize method for model.
@@ -23,20 +33,10 @@ class Profiles extends \Phalcon\Mvc\Model
     public function initialize()
     {
         $this->setSchema("staff");
-        $this->setSource("profiles");
+        $this->setSource("Permissions");
 
-        $this->hasMany('id', 'Users', 'profilesId', [
-            'alias' => 'users',
-            'foreignKey' => [
-                'message' => 'Profile cannot be deleted because it\'s used on Users'
-            ]
-        ]);
-
-        $this->hasMany('id', 'Permissions', 'profilesId', [
-            'alias' => 'permissions',
-            'foreignKey' => [
-                'action' => Relation::ACTION_CASCADE
-            ]
+        $this->belongsTo('profilesId', 'Profiles', 'id', [
+            'alias' => 'profile'
         ]);
     }
 
@@ -47,14 +47,14 @@ class Profiles extends \Phalcon\Mvc\Model
      */
     public function getSource()
     {
-        return 'profiles';
+        return 'Permissions';
     }
 
     /**
      * Allows to query a set of records that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Profiles[]|Profiles|\Phalcon\Mvc\Model\ResultSetInterface
+     * @return Permissions[]|Permissions|\Phalcon\Mvc\Model\ResultSetInterface
      */
     public static function find($parameters = null)
     {
@@ -65,7 +65,7 @@ class Profiles extends \Phalcon\Mvc\Model
      * Allows to query the first record that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Profiles|\Phalcon\Mvc\Model\ResultInterface
+     * @return Permissions|\Phalcon\Mvc\Model\ResultInterface
      */
     public static function findFirst($parameters = null)
     {

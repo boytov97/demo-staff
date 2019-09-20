@@ -14,6 +14,9 @@
             <li class="nav-item">
                 <a class="nav-link" href="{{ url(['for': 'not-working-days']) }}">Not working days</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url(['for': 'permissions-index']) }}">Permissions</a>
+            </li>
         </ul>
         <div class="form-inline my-2 my-lg-0">
             <a class="nav-link" href="{{ url(['for': 'hours-index']) }}">staff</a>

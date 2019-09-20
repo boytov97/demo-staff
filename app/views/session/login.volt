@@ -8,9 +8,9 @@
                     {{ form.render('csrf', ['value': security.getToken()]) }}
 
                     <div class="form-group">
-                        <label for="exampleInputEmail1">Email address</label>
-                        {{ form.render('email') }}
-                        {{ form.messages('email') }}
+                        <label for="exampleInputEmail1">Email or login</label>
+                        {{ form.render('login') }}
+                        {{ form.messages('login') }}
                     </div>
 
                     <div class="form-group">
@@ -21,7 +21,7 @@
 
                     <div class="form-group form-check">
                         {{ form.render('remember') }}
-                        <label class="form-check-label" for="exampleCheck1">Check me out</label>
+                        <label class="form-check-label" for="exampleCheck1">Remember</label>
                     </div>
 
                     {{ form.render('submit') }}

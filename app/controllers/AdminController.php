@@ -17,13 +17,10 @@ class AdminController extends ControllerBase
     public function initialize()
     {
         $this->validation = new AdminValidation();
-        parent::initialize();
-    }
-
-    public function beforeExecuteRoute()
-    {
         $this->month = date('m');
         $this->year = date('Y');
+
+        parent::initialize();
     }
     
     public function indexAction()
@@ -153,7 +150,11 @@ class AdminController extends ControllerBase
 
         if ($this->request->isPost()) {
             if ($form->isValid($this->request->getPost())) {
-                $user = $this->getUsersModel()->checkUniqueness($this->request->getPost('email'));
+
+                $login = $this->request->getPost('login');
+                $email = $this->request->getPost('email');
+
+                $user = $this->getUsersModel()->checkUniqueness($email, $login);
 
                 if(!$user) {
                     $user = new Users();
@@ -174,7 +175,7 @@ class AdminController extends ControllerBase
                         return $this->response->redirect('admin');
                     }
                 } else {
-                    $this->flash->error('User with this email already created!');
+                    $this->flash->error('User with this email or login already created!');
                 }
             }
         }

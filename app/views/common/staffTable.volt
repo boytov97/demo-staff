@@ -134,7 +134,7 @@
                                                                        class="start-end__input input_without_border" step="1" required> -
 
                                                                 <input type="time" name="stop" value="{{ startEnd.stop }}"
-                                                                       class="start-end__input input_without_border" step="0.1" required>
+                                                                       class="start-end__input input_without_border" step="1" required>
 
                                                                 <a data-href="" class="start_end_edit" title="edit">
                                                                     <i class="fa fa-pencil"></i>

@@ -24,14 +24,10 @@ class HoursController extends ControllerBase
     {
         $this->view->setTemplateBefore('protected');
         $this->settings = new Settings();
-
-        return parent::initialize();
-    }
-
-    public function beforeExecuteRoute()
-    {
         $this->month = date('m');
         $this->year = date('Y');
+
+        return parent::initialize();
     }
 
     public function indexAction()
@@ -184,7 +180,8 @@ class HoursController extends ControllerBase
                     'startEnds' => $hour->startEnds,
                     'hourId'    => $hour->id,
                     'total'     => $this->total,
-                    'less'      => $this->less
+                    'less'      => $this->less,
+                    'late'      => $entity['late'] ?: 0,
                 ]));
             }
 

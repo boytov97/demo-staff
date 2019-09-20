@@ -6,7 +6,11 @@ class Auth extends Component
 {
     public function check($loginPost)
     {
-        $user = Users::findFirstByEmail($loginPost['email']);
+        if($this->isEmail($loginPost['login'])) {
+            $user = Users::findFirstByEmail($loginPost['login']);
+        } else {
+            $user = $this->getModel()->findFirstByLogin($loginPost['login']);
+        }
 
         if(!$user) {
             throw new AuthException('Wrong email/password combination');
@@ -15,6 +19,8 @@ class Auth extends Component
         if(!$this->security->checkHash($loginPost['password'], $user->password)) {
             throw new AuthException('Wrong password combination');
         }
+
+        $this->checkUserActivate($user);
 
         // Check if the remember me was selected
         if (isset($loginPost['remember'])) {
@@ -71,7 +77,7 @@ class Auth extends Component
     {
         $user = Users::findFirstById($id);
         if ($user == false) {
-            throw new Exception('The user does not exist');
+            throw new AuthException('The user does not exist');
         }
 
         $this->session->set('auth-identity', [
@@ -94,7 +100,7 @@ class Auth extends Component
 
             $user = Users::findFirstById($identity['id']);
             if ($user == false) {
-                throw new Exception('The user does not exist');
+                throw new AuthException('The user does not exist');
             }
 
             return $user;
@@ -162,6 +168,19 @@ class Auth extends Component
         return $this->response->redirect($this->url->get(['for' => 'session-index']));
     }
 
+    /**
+     * Проверка на активности
+     *
+     * @param Users $user
+     * @throws Exception
+     */
+    public function checkUserActivate(Users $user)
+    {
+        if ($user->active != 'Y') {
+            throw new AuthException('The user is inactive');
+        }
+    }
+
     protected function createRememberEnvironment(Users $user)
     {
         $userAgent = $this->request->getUserAgent();
@@ -213,5 +232,21 @@ class Auth extends Component
         if ($user) {
             $user->delete();
         }
+    }
+
+    protected function isEmail($login)
+    {
+        $arrayLogin = explode('@', $login);
+
+        if(count($arrayLogin) > 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    protected function getModel()
+    {
+        return new Users();
     }
 }
