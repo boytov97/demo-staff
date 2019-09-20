@@ -141,7 +141,7 @@
                                                                 </a>
 
                                                                 <button class="input-group-addon btn start_end_save hidden_start-end_btn"
-                                                                        title="{{ (user.active === 'N') ? 'activate' : 'deactivate' }}">
+                                                                        title="save">
                                                                     <i class="fa fa-floppy-o" aria-hidden="true"></i>
                                                                 </button>
                                                             </form>

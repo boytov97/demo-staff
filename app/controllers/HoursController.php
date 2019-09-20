@@ -92,7 +92,7 @@ class HoursController extends ControllerBase
         $this->view->percentOfTotal = $this->getPercentOfTotal($workingDaysCount, $totalSecondPerMonth);
         $this->view->authUserlateCount = $this->getAuthUserLateCount($this->month, $this->year);
         $this->view->lateCountPerMonth = $this->getLateCountPerMonth($this->month, $this->year);
-        $this->view->maxLate = $this->settings->getByKey('max_late');
+        $this->view->maxLate = $this->settings->getValueByKey('max_late');
         $this->view->lateUsers = $this->getBeenLateUsers($this->month, $this->year);
     }
 
@@ -108,7 +108,7 @@ class HoursController extends ControllerBase
             if ($this->request->getPost('action') == 'start') {
 
                 if (!$firstStartEnd->start) {
-                    $beginning = $this->settings->getByKey('beginning') ?: $this->beginning;
+                    $beginning = $this->settings->getValueByKey('beginning') ?: $this->beginning;
 
                     if (strtotime($beginning) < strtotime('now')) {
                         $entity['late'] = 1;

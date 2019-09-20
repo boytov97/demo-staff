@@ -166,4 +166,12 @@ $router->add(
     ]
 )->setName('not-working-day-delete');
 
+$router->addPost(
+    '/admin/settings/create-update',
+    [
+        'controller' => 'settings',
+        'action'     => 'createOrUpdate',
+    ]
+)->setName('settings-create-update');
+
 return $router;

@@ -22,6 +22,7 @@ class NotWorkingDaysController extends ControllerBase
             $notWorkingDay->month = $this->request->getPost('month');
             $notWorkingDay->day = $this->request->getPost('day');
             $notWorkingDay->repeat = $this->request->getPost('repeat') ?: 'N';
+            $notWorkingDay->createdAt = date('Y');
 
             if(!$notWorkingDay->save()) {
                 $this->flash->error($notWorkingDay->getMessage());

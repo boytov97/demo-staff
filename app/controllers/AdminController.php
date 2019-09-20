@@ -54,6 +54,11 @@ class AdminController extends ControllerBase
         $this->view->defaultYear = $this->year;
         $this->view->defaultMonth = $this->month;
         $this->view->datesMonth = $datesMonth;
+        $this->view->beginning = $this->getSettingsModel()->getValueByKey('beginning');
+        $this->view->maxLate = $this->getSettingsModel()->getValueByKey('max_late');
+        $this->view->sessionMessages = $this->session->get('setting_message');
+
+        $this->session->remove('setting_message');
     }
 
     public function updateStartEndAction($id)
@@ -93,7 +98,7 @@ class AdminController extends ControllerBase
                     $assignment['total'] = $total;
 
                     if($firstStartEnd->id == $id) {
-                        $beginning = $this->getSettingsModel()->getByKey('beginning') ?: $this->beginning;
+                        $beginning = $this->getSettingsModel()->getValueByKey('beginning') ?: $this->beginning;
 
                         if (strtotime($beginning) < strtotime($this->request->getPost('start'))) {
                             $assignment['late'] = 1;

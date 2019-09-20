@@ -71,6 +71,18 @@ class Settings extends \Phalcon\Mvc\Model
             ]
         ]);
 
+        return $item;
+    }
+
+    public function getValueByKey($key)
+    {
+        $item = self::findFirst([
+            'conditions' => 'key = :key:',
+            'bind' => [
+                'key' => $key
+            ]
+        ]);
+
         return $item ? $item->value : null;
     }
 

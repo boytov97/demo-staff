@@ -4,6 +4,32 @@
     <div class="col-md-12">
         <div class="row">
             <div class="col-md-12">
+                <div class="settings__wrapper">
+                    {{ partial('common/sessionMessages', [
+                        'sessionMessages': sessionMessages
+                    ]) }}
+
+                    <form action="{{ url(['for': 'settings-create-update']) }}" method="POST">
+                        <div class="row">
+                            <div class="col">
+                                <label for="exampleInputEmail1">Start of working day</label>
+                                <input type="time" class="form-control" id="exampleInputEmail1" name="settings[beginning]"
+                                       step="1" value="{{ beginning }}">
+                            </div>
+
+                            <div class="col">
+                                <label for="exampleInputPassword1">Maximum late for month</label>
+                                <input type="text" class="form-control" id="exampleInputPassword1" name="settings[max_late]"
+                                       value="{{ maxLate }}">
+                            </div>
+
+                            <div class="settings_dtn_wrapper">
+                                <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
                 {{ partial('common/filter', [
                     'action': url(['for': 'admin-index']),
                     'months': months,
