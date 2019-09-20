@@ -130,6 +130,8 @@ CREATE TABLE IF NOT EXISTS `not_working_days` (
   `month` int(2) NOT NULL,
   `day` int(2) NOT NULL,
   `repeat` ENUM('Y', 'N') DEFAULT 'Y',
+  `holiday` ENUM('Y', 'N') DEFAULT 'N',
+  `createdAt` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 

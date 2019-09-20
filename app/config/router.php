@@ -142,4 +142,36 @@ $router->addPost(
     ]
 )->setName('admin-update-start-end');
 
+$router->add(
+    '/admin/not-working-days',
+    [
+        'controller' => 'notWorkingDays',
+        'action'     => 'index',
+    ]
+)->setName('not-working-days');
+
+$router->add(
+    '/admin/not-working-day/create',
+    [
+        'controller' => 'notWorkingDays',
+        'action'     => 'create',
+    ]
+)->setName('not-working-day-create');
+
+$router->add(
+    '/admin/not-working-day/{id}/delete',
+    [
+        'controller' => 'notWorkingDays',
+        'action'     => 'delete',
+    ]
+)->setName('not-working-day-delete');
+
+$router->addPost(
+    '/admin/settings/create-update',
+    [
+        'controller' => 'settings',
+        'action'     => 'createOrUpdate',
+    ]
+)->setName('settings-create-update');
+
 return $router;
