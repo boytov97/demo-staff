@@ -6,7 +6,8 @@
             <div class="col-md-12">
                 <div class="settings__wrapper">
                     {{ partial('common/sessionMessages', [
-                        'sessionMessages': sessionMessages
+                        'successMessages': successMessages,
+                        'errorMessages': errorMessages
                     ]) }}
 
                     <form action="{{ url(['for': 'settings-create-update']) }}" method="POST">

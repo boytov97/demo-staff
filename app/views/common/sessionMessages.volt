@@ -1,15 +1,17 @@
 <div class="session_messages_wrapper">
-    {% if sessionMessages is not empty %}
-        {% if sessionMessages['success'] is defined %}
-            <p class="alert alert-success">{{ sessionMessages['success'] }}</p>
-        {% else %}
-            <ul>
-                {% for sessionMessage in sessionMessages  %}
-                    {% for message in sessionMessage  %}
-                        <li class="alert alert-danger">{{ message }}</li>
-                    {% endfor %}
-                {% endfor %}
-            </ul>
-        {% endif %}
+    {% if successMessages is defined %}
+        <ul>
+            {% for successMessage in successMessages  %}
+                <li class="alert alert-success">{{ successMessage }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if errorMessages is defined %}
+        <ul>
+            {% for successMessage in errorMessages  %}
+                <li class="alert alert-danger">{{ successMessage }}</li>
+            {% endfor %}
+        </ul>
     {% endif %}
 </div>

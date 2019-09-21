@@ -6,6 +6,10 @@ return new Config([
     'privateResources' => [
         'users' => [
             'index',
+            'edit',
+            'profile',
+            'create',
+            'updateActivity',
             'deleteUploads',
             'changePassword'
         ],
@@ -24,10 +28,6 @@ return new Config([
         ],
         'admin' => [
             'index',
-            'edit',
-            'users',
-            'createUser',
-            'updateActivity',
             'updateStartEnd',
         ],
         'permissions' => [

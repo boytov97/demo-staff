@@ -49,12 +49,15 @@ class HoursController extends ControllerBase
         $hour = $this->create($currentDate);
         $startEnds = $this->getStartEndModel()->findByHourId($hour->id);
 
-        $hour->assign([
-            'total' => $this->dateTime->getTotalDifference($startEnds)
-        ]);
+        if ($hour->total) {
 
-        if (!$hour->save()) {
-            $this->flash->error($hour->getMessages());
+            $hour->assign([
+                'total' => $this->dateTime->getTotalDifference($startEnds)
+            ]);
+
+            if (!$hour->save()) {
+                $this->flash->error($hour->getMessages());
+            }
         }
 
         $lastStartTime = null;
@@ -97,6 +100,7 @@ class HoursController extends ControllerBase
         if ($this->request->isPost()) {
             $hour = Hours::findFirst($id);
             $firstStartEnd = $this->getStartEndModel()->findFirstByHourId($hour->id);
+            $notWorkingDays = $this->getNotWorkingDaysModel()->getAllByMonth($this->month);
 
             $message = [];
             $entity = [];
@@ -106,8 +110,10 @@ class HoursController extends ControllerBase
                 if (!$firstStartEnd->start) {
                     $beginning = $this->settings->getValueByKey('beginning') ?: $this->beginning;
 
-                    if (strtotime($beginning) < strtotime('now')) {
-                        $entity['late'] = 1;
+                    if (!$this->dateTime->isNotWorkingDay(date('H:i:s'), $notWorkingDays)) {
+                        if (strtotime($beginning) < strtotime('now')) {
+                            $entity['late'] = 1;
+                        }
                     }
                 }
 
@@ -147,8 +153,6 @@ class HoursController extends ControllerBase
 
                 $startEnds = $this->getStartEndModel()->findByHourId($hour->id);
                 $this->total = $this->dateTime->getTotalDifference($startEnds);
-
-                $notWorkingDays = $this->getNotWorkingDaysModel()->getAllByMonth($this->month);
 
                 if (!$this->dateTime->isNotWorkingDay(date('H:i:s'), $notWorkingDays)) {
                     $this->less = (($this->hourForDay * 3600) > $this->dateTime->parseHour($this->total)) ?

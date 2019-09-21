@@ -39,11 +39,11 @@ class Acl extends Component
      */
     private $actionDescriptions = [
         'index'          => 'Access',
+        'profile'        => 'Profile',
         'create'         => 'Create',
         'update'         => 'Update',
         'edit'           => 'Edit',
         'delete'         => 'Delete',
-        'createUser'     => 'CreateUser',
         'updateTotal'    => 'UpdateTotal',
         'createOrUpdate' => 'CreateOrUpdate',
         'updateActivity' => 'UpdateActivity',

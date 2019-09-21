@@ -31,13 +31,12 @@ class PermissionsController extends ControllerBase
                         $permission->save();
                     }
 
-                    $this->flash->success('Permissions were updated with success');
+                    $this->flash->success('Permissions was successfully updated!');
                 }
 
                 $this->acl->rebuild();
 
                 $this->view->permissions = $this->acl->getPermissions($profile);
-                $this->view->profile =  $profile;
             }
 
             $this->view->profile = $profile;

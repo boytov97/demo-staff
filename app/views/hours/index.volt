@@ -92,7 +92,6 @@
                     var user_less = '.user-less_';
 
                     $.each(element.attr('data-href').split('/'), function (key, value) {
-                        console.log(key + '-----' + value);
 
                         if (key === 3 && $.isNumeric(value)) {
                             user_less += value;

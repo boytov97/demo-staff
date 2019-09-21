@@ -11,6 +11,22 @@ class ControllerBase extends Controller
     {
         $this->identity = $this->auth->getIdentity();
         $this->view->setVar('logged_in', is_array($this->identity));
+
+        $errorMessages = [];
+        $successMessages = [];
+
+        if(is_array($this->session->get('error_message'))) {
+            $errorMessages = $this->session->get('error_message');
+            $this->session->remove('error_message');
+        }
+
+        if(is_array( $this->session->get('success_message'))) {
+            $successMessages = $this->session->get('success_message');
+            $this->session->remove('success_message');
+        }
+
+        $this->view->setVar('errorMessages', $errorMessages);
+        $this->view->setVar('successMessages', $successMessages);
     }
 
     /**

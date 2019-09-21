@@ -6,7 +6,7 @@ class SettingsController extends \Phalcon\Mvc\Controller
     {
         if($this->request->isPost()) {
 
-            $saveUpdateMessage = [];
+            $saveUpdateMessage = null;
             $settings = $this->request->getPost('settings');
 
             foreach ($settings as $key => $value) {
@@ -19,7 +19,7 @@ class SettingsController extends \Phalcon\Mvc\Controller
                     ]);
 
                     if(!$setting->save()) {
-                        $saveUpdateMessage['update_error_message'] =  $setting->getMessages();
+                        $saveUpdateMessage = $setting->getMessages();
                     }
                 } else {
                     $setting = $this->getModel();
@@ -28,15 +28,15 @@ class SettingsController extends \Phalcon\Mvc\Controller
                     $setting->value = $value;
 
                     if(!$setting->save()) {
-                        $saveUpdateMessage['save_error_message'] =  $setting->getMessages();
+                        $saveUpdateMessage = $setting->getMessages();
                     }
                 }
             }
 
-            if (count($saveUpdateMessage)) {
-                $this->session->set('setting_message', $saveUpdateMessage);
+            if ($saveUpdateMessage) {
+                $this->session->set('error_message', $saveUpdateMessage);
             } else {
-                $this->session->set('setting_message', ['success' => 'Successfully saved']);
+                $this->session->set('success_message', ['success' => 'Successfully saved']);
             }
 
             return $this->response->redirect('admin');

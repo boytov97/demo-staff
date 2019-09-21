@@ -17,7 +17,7 @@
                                             <option value="">Select a profile</option>
 
                                             {% for key, value in profiles %}
-                                                <option value="{{ value.id }}" {{ (profile and profile.id == value.id ) ? 'selected' : '' }}>
+                                                <option value="{{ value.id }}" {{ (profile is defined and profile.id == value.id ) ? 'selected' : '' }}>
                                                     {{ value.name }}
                                                 </option>
                                             {% endfor %}

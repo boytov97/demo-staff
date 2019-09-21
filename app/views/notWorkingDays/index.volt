@@ -5,6 +5,11 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="middle_wrapper_block">
+                    {{ partial('common/sessionMessages', [
+                        'successMessages': successMessages,
+                        'errorMessages': errorMessages
+                    ]) }}
+
                     {{ partial('admin/common/listCreateLinks', [
                         'listUrl': url(['for': 'not-working-days']),
                         'createUrl': url(['for': 'not-working-day-create'])

@@ -25,11 +25,13 @@ class NotWorkingDaysController extends ControllerBase
             $notWorkingDay->createdAt = date('Y');
 
             if(!$notWorkingDay->save()) {
-                $this->flash->error($notWorkingDay->getMessage());
+                $this->session->set('error_message', $notWorkingDay->getMessage());
             } else {
 
                 $_POST = [];
-                $this->flash->success("Not working day created successfully");
+                $this->session->set('success_message', ['success' => 'Not working day created successfully']);
+
+                return $this->response->redirect('notWorkingDays');
             }
         }
 
@@ -43,9 +45,10 @@ class NotWorkingDaysController extends ControllerBase
         $notWorkingDay = NotWorkingDays::findFirstById($id);
 
         if (!$notWorkingDay->delete()) {
-            $this->flash->error($notWorkingDay->getMessages());
+            $this->session->set('error_message', $notWorkingDay->getMessage());
         } else {
-            $this->flash->success("The not working day was successfully deleted");
+
+            $this->session->set('success_message', ['success' => 'The not working day was successfully deleted']);
         }
 
         return $this->response->redirect('notWorkingDays');
