@@ -2,9 +2,16 @@
 
 class UsersController extends ControllerBase
 {
+    public function initialize()
+    {
+        $this->view->setVar('title', 'Users');
+        parent::initialize();
+    }
+
     public function profileAction()
     {
         $this->view->setTemplateBefore('protected');
+        $this->view->setVar('title', 'Profile');
 
         $form = new ProfileForm();
         $user = Users::findFirstById($this->identity['id']);
@@ -56,6 +63,7 @@ class UsersController extends ControllerBase
     public function changePasswordAction()
     {
         $this->view->setTemplateBefore('protected');
+        $this->view->setVar('title', 'Profile');
         $form = new ChangePasswordForm();
 
         if ($this->request->isPost()) {

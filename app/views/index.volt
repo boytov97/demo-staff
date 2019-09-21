@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>STAFF</title>
+		<title>STAFF {{ (title is defined) ? '- ' ~ title : '' }}</title>
 
         <meta name="viewport" content="width=device-width">
 

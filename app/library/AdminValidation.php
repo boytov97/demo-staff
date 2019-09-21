@@ -10,9 +10,25 @@ class AdminValidation extends Validation
     {
         $this->add(
             'start',
-            new PresenceOf(
+            new Callback(
                 [
-                    'message' => 'The start field is required',
+                    'callback' => function($post) {
+                        if(isset($post['start'])) {
+                            if(strtotime($post['start']) > strtotime($post['stop'])) {
+                                return false;
+                            } else {
+
+                                return new PresenceOf(
+                                    [
+                                        'message' => 'The end field is required',
+                                    ]
+                                );
+                            }
+                        }
+
+                        return true;
+                    },
+                    'message' => 'The start time should be less than stop time'
                 ]
             )
         );

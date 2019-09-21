@@ -5,6 +5,7 @@ class PermissionsController extends ControllerBase
     public function initialize()
     {
         $this->view->setTemplateBefore('admin');
+        $this->view->setVar('title', 'Permissions');
         parent::initialize();
     }
 
