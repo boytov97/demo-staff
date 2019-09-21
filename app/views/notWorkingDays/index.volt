@@ -22,6 +22,7 @@
                             <th scope="col">day</th>
                             <th scope="col">Month</th>
                             <th scope="col">Repeat</th>
+                            <th scope="col">Created at</th>
                             <th scope="col">Actions</th>
                         </tr>
                         </thead>
@@ -33,6 +34,7 @@
                                 <td>{{ notWorkingDay.day }}</td>
                                 <td>{{ notWorkingDay.month }}</td>
                                 <td>{{ notWorkingDay.repeat }}</td>
+                                <td>{{ notWorkingDay.createdAt }}</td>
                                 <td class="action__column">
                                     <div class="action__wrapper">
                                         <a href="{{ url(['for': 'not-working-day-delete', 'id': notWorkingDay.id]) }}"

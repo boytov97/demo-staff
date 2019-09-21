@@ -5,6 +5,7 @@ class NotWorkingDaysController extends ControllerBase
     public function initialize()
     {
         $this->view->setTemplateBefore('admin');
+        $this->view->setVar('title', 'Not working days');
         parent::initialize();
     }
 

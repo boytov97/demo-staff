@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `active` char(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `profilesId` (`profilesId`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
 --
 -- Dumping data for table `users`
@@ -162,7 +162,19 @@ CREATE TABLE IF NOT EXISTS `not_working_days` (
   `holiday` ENUM('Y', 'N') DEFAULT 'N',
   `createdAt` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+
+--
+-- Dumping data for table `not_working_days`
+--
+
+INSERT INTO `not_working_days` (`id`, `month`, `day`, `repeat`, `holiday`, `createdAt`) VALUES
+(1, 1, 1, 'Y', 'Y', '2019'),
+(2, 3, 8, 'Y', 'Y', '2019'),
+(3, 5, 1, 'Y', 'Y', '2019'),
+(4, 5, 9, 'Y', 'Y', '2019'),
+(5, 8, 31, 'Y', 'Y', '2019'),
+(6, 12, 31, 'Y', 'Y', '2019');
 
 --
 -- Table structure for table `settings`

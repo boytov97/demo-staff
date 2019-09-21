@@ -49,11 +49,11 @@ class ControllerBase extends Controller
             // If there is no identity available the user is redirected to index/index
             if (!is_array($identity)) {
 
-                $this->flash->notice('You don\'t have access to this module: private');
+                $this->flash->notice('You don\'t have access to this module: private. To get to this page you must log in');
 
                 $dispatcher->forward([
-                    'controller' => 'index',
-                    'action' => 'index'
+                    'controller' => 'session',
+                    'action' => 'login'
                 ]);
                 return false;
             }

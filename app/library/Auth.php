@@ -177,7 +177,7 @@ class Auth extends Component
     public function checkUserActivate(Users $user)
     {
         if ($user->active != 'Y') {
-            throw new AuthException('The user is inactive');
+            throw new AuthException('User with this email / login is not exist!');
         }
     }
 

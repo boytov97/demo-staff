@@ -16,6 +16,17 @@ body {
     padding: 10px;
 }
 
+.staff_main_wrp {
+    position: relative;
+    text-align: center;
+}
+
+.staff__text {
+    position: absolute;
+    left: 38%;
+    bottom: 8%;
+}
+
 .form__wrapper {
     width: 500px;
     margin: 40px auto;

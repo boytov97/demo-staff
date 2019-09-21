@@ -16,6 +16,8 @@ class AdminController extends ControllerBase
 
     public function initialize()
     {
+        $this->view->setVar('title', 'Admin');
+
         $this->validation = new AdminValidation();
         $this->month = date('m');
         $this->year = date('Y');

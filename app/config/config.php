@@ -10,7 +10,7 @@ return new \Phalcon\Config([
     'database' => [
         'adapter'     => 'Mysql',
         'host'        => 'localhost',
-        'username'    => 'invo',
+        'username'    => 'root',
         'password'    => 'root',
         'dbname'      => 'staff',
         'charset'     => 'utf8',
@@ -35,14 +35,14 @@ return new \Phalcon\Config([
         'baseUri'        => preg_replace('/public([\/\\\\])index.php$/', '', $_SERVER["PHP_SELF"]),
     ],
     'mail' => [
-        'fromName' => 'tboyutov@weltkind.com',
-        'fromEmail' => 'tboyutov@weltkind.com',
+        'fromName' => 'fromName',
+        'fromEmail' => 'fromEmail',
         'smtp' => [
             'server'   => 'smtp.yandex.ru',
             'port'     => 465,
             'security' => 'ssl',
-            'username' => 'tboyutov@weltkind.com',
-            'password' => 'cOdEr097693'
+            'username' => 'username',
+            'password' => 'password of email'
         ]
     ],
     'useMail' => true,
