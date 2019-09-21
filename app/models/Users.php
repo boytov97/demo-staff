@@ -129,16 +129,22 @@ class Users extends \Phalcon\Mvc\Model
         return parent::findFirst($parameters);
     }
 
-    public function checkUniqueness($email)
+    public function checkUniqueness($email, $login)
     {
         $user = Users::findFirst([
-            'conditions' => 'email = :email:',
+            'conditions' => 'email = :email: OR login = :login:',
             'bind' => [
-                'email' => $email
+                'email' => $email,
+                'login' => $login
             ]
         ]);
 
-        return $user;
+        if($user) {
+            return true;
+        } else {
+
+            return false;
+        }
     }
 
     public function getAll()
@@ -148,5 +154,17 @@ class Users extends \Phalcon\Mvc\Model
             ->execute();
 
         return $users;
+    }
+
+    public function findFirstByLogin($login)
+    {
+        $user = Users::findFirst([
+            'conditions' => 'login = :login:',
+            'bind' => [
+                'login' => $login
+            ]
+        ]);
+
+        return $user;
     }
 }

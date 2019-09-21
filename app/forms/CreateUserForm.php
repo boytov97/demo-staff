@@ -10,6 +10,8 @@ use Phalcon\Validation\Validator\StringLength;
 use Phalcon\Validation\Validator\PresenceOf;
 use Phalcon\Validation\Validator\Email;
 use Phalcon\Validation\Validator\Regex;
+use Phalcon\Validation\Validator\Callback;
+use Phalcon\Validation\Validator\Confirmation;
 
 class CreateUserForm extends Form
 {
@@ -40,13 +42,26 @@ class CreateUserForm extends Form
         ]);
 
         $login->addValidators([
-            new PresenceOf([
-                'message' => 'The login is required'
-            ]),
-            new Regex([
-                'pattern' => "/^[a-z]+([-_]?[a-z0-9]+){0,2}$/",
-                'message' => "The creation login is invalid"
-            ])
+            new Callback(
+                [
+                    'callback' => function($post) {
+                        if(isset($post['login'])) {
+                            if(empty($post['login'])) {
+                                return new PresenceOf([
+                                    'message' => 'The login is required'
+                                ]);
+                            } else {
+                                return new Regex([
+                                    'pattern' => "/^[a-z]+([-_]?[a-z0-9]+){0,2}$/",
+                                    'message' => "The creation login is invalid"
+                                ]);
+                            }
+                        }
+
+                        return true;
+                    }
+                ]
+            )
         ]);
 
         $this->add($login);
@@ -80,12 +95,25 @@ class CreateUserForm extends Form
         ]);
 
         $email->addValidators([
-            new PresenceOf([
-                'message' => 'The email is required'
-            ]),
-            new Email([
-                'message' => 'The email is not valid'
-            ])
+            new Callback(
+                [
+                    'callback' => function($post) {
+                        if(isset($post['email'])) {
+                            if(empty($post['email'])) {
+                                return new PresenceOf([
+                                    'message' => 'The email is required'
+                                ]);
+                            } else {
+                                return new Email([
+                                    'message' => 'The email is not valid'
+                                ]);
+                            }
+                        }
+
+                        return true;
+                    }
+                ]
+            )
         ]);
 
         $this->add($email);
@@ -97,9 +125,26 @@ class CreateUserForm extends Form
         ]);
 
         $password->addValidators([
-            new PresenceOf([
-                'message' => 'The password is required'
-            ])
+            new Callback(
+                [
+                    'callback' => function($post) {
+                        if(isset($post['password'])) {
+                            if(empty($post['password'])) {
+                                return new PresenceOf([
+                                    'message' => 'The password is required'
+                                ]);
+                            } else {
+                                return new Confirmation([
+                                    'message' => 'Password doesn\'t match confirmation',
+                                    'with' => 'confirmPassword'
+                                ]);
+                            }
+                        }
+
+                        return true;
+                    }
+                ]
+            )
         ]);
 
         $password->clear();
@@ -114,9 +159,19 @@ class CreateUserForm extends Form
         ]);
 
         $confirmPassword->addValidators([
-            new PresenceOf([
-                'message' => 'The confirmation password is required'
-            ])
+            new Callback(
+                [
+                    'callback' => function($post) {
+                        if(isset($post['confirmPassword'])) {
+                            return new PresenceOf([
+                                'message' => 'The confirmPassword is required'
+                            ]);
+                        }
+
+                        return true;
+                    }
+                ]
+            )
         ]);
 
         $this->add($confirmPassword);

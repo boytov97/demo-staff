@@ -3,44 +3,65 @@
 <div class="page__wrapper">
     <div class="col-md-12">
         <div class="row">
-            <div class="profile__wrapper">
-                <form action="{{ url(['for': 'user-profile']) }}" method="POST" enctype="multipart/form-data">
-                    <div class="form-group">
-                        <div class="profile_image_wrapper">
-                            {% if user.image is not empty %}
-                                {{ image(user.image, 'alt': user.name, 'class': 'img-thumbnail') }}
-                                <a href="{{ url(['for': 'user-delete-uploads']) }}" class="delete_file" title="delete image">
-                                    <i class="fa fa-trash-o" aria-hidden="true"></i>
-                                </a>
-                            {% else %}
-                                {{ image('img/default.jpg', 'alt': user.name, 'class': 'img-thumbnail') }}
-                            {% endif %}
-                        </div>
+            <div class="col-md-12">
+                <div class="table__wrapper">
+                    {{ partial('common/sessionMessages', [
+                        'successMessages': successMessages,
+                        'errorMessages': errorMessages
+                    ]) }}
 
-                        <br>
-                        <div class="input-group mb-3">
-                            <div class="custom-file">
-                                {{ form.render("image") }}
-                            </div>
-                        </div>
 
-                        {{ form.messages('image') }}
+                    {{ partial('admin/common/listCreateLinks', [
+                        'listUrl': url(['for': 'admin-users-list']),
+                        'createUrl': url(['for': 'admin-create-user'])
+                    ]) }}
 
-                        <label for="nameInput">Name</label>
-                        <div class="input-group">
-                            {{ form.render("name", ['value': authUser['name'] ? authUser['name'] : '' ]) }}
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Login</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Image</th>
+                            <th scope="col">Profile</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                        </thead>
 
-                            <a href="#" class="input-group-addon btn bg-red edit__name">
-                                <i class="fa fa-pencil"></i>
-                            </a>
-                        </div><br>
-                        {{ form.messages('name') }}
-                    </div>
-                    <button type="submit" class="btn btn-primary" id="profile_edit_dtn">Submit</button>
-                </form>
+                        <tbody>
+                        {% for user in users %}
+                            <tr class="{{ (user.active === 'N') ? 'not_active' : '' }}">
+                                <td>{{ user.name }}</td>
+                                <td>{{ user.login }}</td>
+                                <td>{{ user.email }}</td>
+                                <td class="admin_user_image_wrp">
+                                    {% if user.image is not empty %}
+                                        {{ image(user.image, 'alt': user.name, 'class': 'admin_user_image') }}
+                                    {% else %}
+                                        {{ image('img/default.jpg', 'alt': user.name, 'class': 'admin_user_image') }}
+                                    {% endif %}
+                                </td>
+                                <td>{{ user.profile.name }}</td>
+                                <td class="action__column">
+                                    <div class="action__wrapper">
+                                        <a href="{{ url(['for': 'admin-users-edit', 'id': user.id]) }}" class="input-group-addon btn bg-red edit__icon_link" title="edit">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
+                                    </div>
 
-                <div class="link_to_change_password">
-                    {{ link_to(['for': 'users-changePassword'], 'Change fassword') }}
+                                    <div class="action__wrapper">
+                                        <form action="{{ url(['for': 'admin-users-update-activity', 'id': user.id]) }}" method="POST">
+                                            <input type="hidden" name="active" value="{{ (user.active === 'N') ? 'Y' : 'N' }}">
+                                            <button type="submit" class="input-group-addon btn bg-red edit__icon_link" title="{{ (user.active === 'N') ? 'activate' : 'deactivate' }}">
+                                                <i class="fa fa-ban"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

@@ -92,7 +92,6 @@
                     var user_less = '.user-less_';
 
                     $.each(element.attr('data-href').split('/'), function (key, value) {
-                        console.log(key + '-----' + value);
 
                         if (key === 3 && $.isNumeric(value)) {
                             user_less += value;
@@ -153,6 +152,11 @@
                         if (parsedData.less) {
                             var userLess = '.user-less_' + parsedData.hourId;
                             $(userLess).html('less: ' + parsedData.less);
+                        }
+
+                        if (parsedData.late) {
+                            var userLateMark = '.user_late_mark_' + parsedData.hourId;
+                            $(userLateMark).parent().parent().css('background-color', '#ffb9b2');
                         }
                     });
 

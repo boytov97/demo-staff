@@ -1,22 +1,21 @@
 <?php
 
 use Phalcon\Forms\Form;
-use Phalcon\Forms\Element\Email as ElementEmail;
+use Phalcon\Forms\Element\Text;
 use Phalcon\Forms\Element\Password;
 use Phalcon\Forms\Element\Submit;
 use Phalcon\Forms\Element\Check;
 use Phalcon\Forms\Element\Hidden;
 use Phalcon\Validation\Validator\PresenceOf;
-use Phalcon\Validation\Validator\Email;
 use Phalcon\Validation\Validator\Identical;
 
 class LoginForm extends Form
 {
     public function initialize()
     {
-        $email = new ElementEmail('email', [
+        $email = new Text('login', [
             'autocomplete' => 'off',
-            'placeholder' => 'Email',
+            'placeholder' => 'Email or login',
             'class' => 'form-control',
             'id' => 'exampleInputEmail1'
         ]);
@@ -24,9 +23,6 @@ class LoginForm extends Form
         $email->addValidators([
             new PresenceOf([
                 'message' => 'The email is required'
-            ]),
-            new Email([
-                'message' => 'The email is not valid'
             ])
         ]);
 

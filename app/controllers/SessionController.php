@@ -27,7 +27,7 @@ class SessionController extends ControllerBase
                 if ($form->isValid($this->request->getPost())) {
 
                     $this->auth->check([
-                        'email' => $this->request->getPost('email'),
+                        'login' => $this->request->getPost('login'),
                         'password' => $this->request->getPost('password'),
                         'remember' => $this->request->getPost('remember')
                     ]);

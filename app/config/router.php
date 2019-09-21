@@ -18,7 +18,7 @@ $router->add(
     '/user/profile',
     [
         'controller' => 'users',
-        'action'     => 'index',
+        'action'     => 'profile',
     ]
 )->setName('user-profile');
 
@@ -105,15 +105,15 @@ $router->add(
 $router->add(
     '/admin/users',
     [
-        'controller' => 'admin',
-        'action'     => 'users',
+        'controller' => 'users',
+        'action'     => 'index',
     ]
-)->setName('admin-users');
+)->setName('admin-users-list');
 
 $router->add(
     '/admin/user/{id}/edit',
     [
-        'controller' => 'admin',
+        'controller' => 'users',
         'action'     => 'edit',
     ]
 )->setName('admin-users-edit');
@@ -121,7 +121,7 @@ $router->add(
 $router->addPost(
     '/admin/user/{id}/activate-deactivate',
     [
-        'controller' => 'admin',
+        'controller' => 'users',
         'action'     => 'updateActivity',
     ]
 )->setName('admin-users-update-activity');
@@ -129,8 +129,8 @@ $router->addPost(
 $router->add(
     '/admin/create-user',
     [
-        'controller' => 'admin',
-        'action'     => 'createUser',
+        'controller' => 'users',
+        'action'     => 'create',
     ]
 )->setName('admin-create-user');
 
@@ -173,5 +173,13 @@ $router->addPost(
         'action'     => 'createOrUpdate',
     ]
 )->setName('settings-create-update');
+
+$router->add(
+    '/admin/permissions',
+    [
+        'controller' => 'permissions',
+        'action'     => 'index',
+    ]
+)->setName('permissions-index');
 
 return $router;

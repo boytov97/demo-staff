@@ -17,13 +17,10 @@ class AdminController extends ControllerBase
     public function initialize()
     {
         $this->validation = new AdminValidation();
-        parent::initialize();
-    }
-
-    public function beforeExecuteRoute()
-    {
         $this->month = date('m');
         $this->year = date('Y');
+
+        parent::initialize();
     }
     
     public function indexAction()
@@ -56,9 +53,6 @@ class AdminController extends ControllerBase
         $this->view->datesMonth = $datesMonth;
         $this->view->beginning = $this->getSettingsModel()->getValueByKey('beginning');
         $this->view->maxLate = $this->getSettingsModel()->getValueByKey('max_late');
-        $this->view->sessionMessages = $this->session->get('setting_message');
-
-        $this->session->remove('setting_message');
     }
 
     public function updateStartEndAction($id)
@@ -145,101 +139,6 @@ class AdminController extends ControllerBase
 
             return $response;
         }
-    }
-
-    public function createUserAction()
-    {
-        $form = new CreateUserForm();
-
-        if ($this->request->isPost()) {
-            if ($form->isValid($this->request->getPost())) {
-                $user = $this->getUsersModel()->checkUniqueness($this->request->getPost('email'));
-
-                if(!$user) {
-                    $user = new Users();
-
-                    $user->name = $this->request->getPost('name');
-                    $user->login = $this->request->getPost('login');
-                    $user->email = $this->request->getPost('email');
-                    $user->password = $this->security->hash($this->request->getPost('password'));
-                    $user->profilesId = $this->request->getPost('profilesId');
-
-                    if(!$user->save()) {
-                        $this->flash->error($user->getMessages());
-                    } else {
-                        $this->flash->success('User successfully created');
-
-                        $_POST = [];
-
-                        return $this->response->redirect('admin');
-                    }
-                } else {
-                    $this->flash->error('User with this email already created!');
-                }
-            }
-        }
-
-        $this->view->authUser = $this->identity;
-        $this->view->action = $this->url->get(['for' => 'admin-create-user']);
-        $this->view->form = $form;
-    }
-
-    public function editAction($userId)
-    {
-        $this->view->pick('admin/createUser');
-
-        $user = Users::findFirstById($userId);
-        $form = new CreateUserForm();
-
-        if ($this->request->isPost()) {
-            if ($form->isValid($this->request->getPost())) {
-                $user->assign([
-                    'name' => $this->request->getPost('name'),
-                    'profilesId' => $this->request->getPost('profilesId'),
-                ]);
-
-                if(!$user->save()) {
-                    $this->flash->error($user->getMessages());
-                } else {
-                    $this->flash->success('User successfully updated!');
-
-                    $_POST = [];
-
-                    return $this->response->redirect('admin');
-                }
-            }
-        }
-
-        $this->view->authUser = $this->identity;
-        $this->view->action = $this->url->get(['for' => 'admin-users-edit', 'id' => $user->id]);
-        $this->view->form = $form;
-        $this->view->user = $user;
-    }
-
-    public function updateActivityAction($userId)
-    {
-        if ($this->request->isPost()) {
-            $user = Users::findFirstById($userId);
-
-            $user->assign([
-                'active' => $this->request->getPost('active')
-            ]);
-
-            if (!$user->save()) {
-                $this->flash->error($user->getMessages());
-            } else {
-
-                return $this->response->redirect('admin/users');
-            }
-        }
-    }
-
-    public function usersAction()
-    {
-        $users = $this->getUsersModel()->getAll();
-
-        $this->view->authUser = $this->identity;
-        $this->view->users = $users;
     }
 
     protected function createCounter($users, $currentDate)

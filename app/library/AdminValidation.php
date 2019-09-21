@@ -2,7 +2,7 @@
 
 use Phalcon\Validation;
 use Phalcon\Validation\Validator\PresenceOf;
-use \Phalcon\Validation\Validator\Callback;
+use Phalcon\Validation\Validator\Callback;
 
 class AdminValidation extends Validation
 {

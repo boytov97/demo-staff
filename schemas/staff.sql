@@ -30,7 +30,36 @@ CREATE TABLE IF NOT EXISTS `permissions` (
   `action` varchar(16) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `profilesId` (`profilesId`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=23 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=24 ;
+
+--
+-- Dumping data for table `permissions`
+--
+
+INSERT INTO `permissions` (`id`, `profilesId`, `resource`, `action`) VALUES
+(1, 1, 'users', 'index'),
+(2, 1, 'users', 'edit'),
+(3, 1, 'users', 'profile'),
+(4, 1, 'users', 'create'),
+(5, 1, 'users', 'updateActivity'),
+(6, 1, 'users', 'deleteUploads'),
+(7, 1, 'users', 'changePassword'),
+(8, 1, 'hours', 'index'),
+(9, 1, 'hours', 'update'),
+(10, 1, 'hours', 'updateTotal'),
+(11, 1, 'notWorkingDays', 'index'),
+(12, 1, 'notWorkingDays', 'create'),
+(13, 1, 'notWorkingDays', 'delete'),
+(14, 1, 'settings', 'createOrUpdate'),
+(15, 1, 'admin', 'index'),
+(16, 1, 'admin', 'updateStartEnd'),
+(17, 1, 'permissions', 'index'),
+(18, 2, 'users', 'index'),
+(19, 2, 'users', 'deleteUploads'),
+(20, 2, 'users', 'changePassword'),
+(21, 2, 'hours', 'index'),
+(22, 2, 'hours', 'update'),
+(23, 2, 'hours', 'updateTotal');
 
 --
 -- Table structure for table `users`
