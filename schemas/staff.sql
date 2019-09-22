@@ -83,10 +83,10 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `password`, `profilesId`, `active`) VALUES
-(1, 'Bob Burnquist', 'bob@phalconphp.com', '$2y$08$QXBpK3d6V1BDTUR3Tno5Mu81LK9GsLSuG19uwJROhBYL/OD.oQ/QC', 1, 'Y'),
-(2, 'Erik', 'erik@phalconphp.com', '$2y$08$QXBpK3d6V1BDTUR3Tno5Mu81LK9GsLSuG19uwJROhBYL/OD.oQ/QC', 2, 'Y'),
-(3, 'Veronica', 'veronica@phalconphp.com', '$2y$08$QXBpK3d6V1BDTUR3Tno5Mu81LK9GsLSuG19uwJROhBYL/OD.oQ/QC', 3, 'Y');
+INSERT INTO `users` (`id`, `name`, `login`, `email`, `password`, `profilesId`, `active`) VALUES
+(1, 'Bob Burnquist', 'bob-admin', 'bob@phalconphp.com', '$2y$08$QXBpK3d6V1BDTUR3Tno5Mu81LK9GsLSuG19uwJROhBYL/OD.oQ/QC', 1, 'Y'),
+(2, 'Erik', 'erik-user', 'erik@phalconphp.com', '$2y$08$QXBpK3d6V1BDTUR3Tno5Mu81LK9GsLSuG19uwJROhBYL/OD.oQ/QC', 2, 'Y'),
+(3, 'Veronica', 'veronica-guest', 'veronica@phalconphp.com', '$2y$08$QXBpK3d6V1BDTUR3Tno5Mu81LK9GsLSuG19uwJROhBYL/OD.oQ/QC', 3, 'Y');
 
 --
 -- Table structure for table `remember_tokens`
@@ -127,8 +127,8 @@ DROP TABLE IF EXISTS `hours`;
 CREATE TABLE IF NOT EXISTS `hours` (
 `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 `usersId` int(10) unsigned NOT NULL,
-`total` time DEFAULT NULL,
-`less` time DEFAULT NULL,
+`total` varchar(12) DEFAULT NULL,
+`less` varchar(12) DEFAULT NULL,
 `late` boolean NOT NULL DEFAULT 0,
 `createdAt` date NOT NULL,
 PRIMARY KEY (`id`),

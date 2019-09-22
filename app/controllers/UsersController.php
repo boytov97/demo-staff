@@ -82,7 +82,7 @@ class UsersController extends ControllerBase
 
                     $_POST = [];
 
-                    return $this->response->redirect('users');
+                    return $this->response->redirect('users/profile');
                 }
             }
         }
@@ -109,7 +109,7 @@ class UsersController extends ControllerBase
             $this->flash->success('Your image was successfully deleted');
         }
 
-        return $this->response->redirect('users');
+        return $this->response->redirect('users/profile');
     }
 
     public function createAction()

@@ -63,6 +63,8 @@ class AdminController extends ControllerBase
             $entity   = [];
             $messages = [];
 
+            $notWorkingDays = $this->getNotWorkingDaysModel()->getAllByMonth($this->month);
+
             $validationMessages = $this->validation->validate($this->request->getPost());
             $response = new Response();
 
@@ -96,14 +98,15 @@ class AdminController extends ControllerBase
                     if($firstStartEnd->id == $id) {
                         $beginning = $this->getSettingsModel()->getValueByKey('beginning') ?: $this->beginning;
 
-                        if (strtotime($beginning) < strtotime($this->request->getPost('start'))) {
-                            $assignment['late'] = 1;
-                        } else {
-                            $assignment['late'] = 0;
+                        if (!$this->dateTime->isNotWorkingDay($hour->createdAt, $notWorkingDays)) {
+                            if (strtotime($beginning) < strtotime($this->request->getPost('start'))) {
+                                $assignment['late'] = 1;
+                            } else {
+                                $assignment['late'] = 0;
+                            }
                         }
                     }
 
-                    $notWorkingDays = $this->getNotWorkingDaysModel()->getAllByMonth($this->month);
                     $lastStopTime = null;
                     $startEndsCount = count($startEnds);
                     $i = 0;

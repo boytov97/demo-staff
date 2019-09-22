@@ -14,7 +14,7 @@ class AdminValidation extends Validation
                 [
                     'callback' => function($post) {
                         if(isset($post['start'])) {
-                            if(strtotime($post['start']) > strtotime($post['stop'])) {
+                            if(isset($post['stop']) && strtotime($post['start']) > strtotime($post['stop'])) {
                                 return false;
                             } else {
 
