@@ -145,7 +145,7 @@ $router->addPost(
 $router->add(
     '/admin/not-working-days',
     [
-        'controller' => 'notWorkingDays',
+        'controller' => 'not_working_days',
         'action'     => 'index',
     ]
 )->setName('not-working-days');
@@ -153,7 +153,7 @@ $router->add(
 $router->add(
     '/admin/not-working-day/create',
     [
-        'controller' => 'notWorkingDays',
+        'controller' => 'not_working_days',
         'action'     => 'create',
     ]
 )->setName('not-working-day-create');
@@ -161,7 +161,7 @@ $router->add(
 $router->add(
     '/admin/not-working-day/{id}/delete',
     [
-        'controller' => 'notWorkingDays',
+        'controller' => 'not_working_days',
         'action'     => 'delete',
     ]
 )->setName('not-working-day-delete');

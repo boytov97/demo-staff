@@ -32,7 +32,7 @@ class NotWorkingDaysController extends ControllerBase
                 $_POST = [];
                 $this->session->set('success_message', ['success' => 'Not working day created successfully']);
 
-                return $this->response->redirect('notWorkingDays');
+                return $this->response->redirect('not_working_days');
             }
         }
 
@@ -52,7 +52,7 @@ class NotWorkingDaysController extends ControllerBase
             $this->session->set('success_message', ['success' => 'The not working day was successfully deleted']);
         }
 
-        return $this->response->redirect('notWorkingDays');
+        return $this->response->redirect('not_working_days');
     }
 
     protected function getModel()

@@ -33,7 +33,7 @@ class Permissions extends \Phalcon\Mvc\Model
     public function initialize()
     {
         $this->setSchema("staff");
-        $this->setSource("Permissions");
+        $this->setSource("permissions");
 
         $this->belongsTo('profilesId', 'Profiles', 'id', [
             'alias' => 'profile'
@@ -47,7 +47,7 @@ class Permissions extends \Phalcon\Mvc\Model
      */
     public function getSource()
     {
-        return 'Permissions';
+        return 'permissions';
     }
 
     /**
