@@ -39,15 +39,17 @@ class AdminController extends ControllerBase
         
         $users = Users::find();
 
-        $this->createCounter($users, $currentDate);
+        $this->createCounters($users, $currentDate);
 
         $notWorkingDays = $this->getNotWorkingDaysModel()->getAllByMonth($this->month);
         $datesMonth = $this->dateTime->getDates($this->month, $this->year, $notWorkingDays);
 
         $this->view->currentDate = date('Y-m-d');
+        $this->view->currentTimestamp = strtotime('now');
         $this->view->authUser = $this->identity;
         $this->view->admin = true;
         $this->view->users = $users;
+        $this->view->hoursCreatedAts = $this->dateTime->getArrayOfUsersHoursCreatedAt($users);
         $this->view->years = $this->dateTime->getYears();
         $this->view->months = $this->dateTime->getMonths();
         $this->view->defaultYear = $this->year;
@@ -62,6 +64,10 @@ class AdminController extends ControllerBase
         if ($this->request->isPost()) {
             $entity   = [];
             $messages = [];
+
+            if ($month = $this->request->get('month')) {
+                $this->month = $month;
+            }
 
             $notWorkingDays = $this->getNotWorkingDaysModel()->getAllByMonth($this->month);
 
@@ -96,6 +102,7 @@ class AdminController extends ControllerBase
                     $assignment['total'] = $total;
 
                     if($firstStartEnd->id == $id) {
+
                         $beginning = $this->getSettingsModel()->getValueByKey('beginning') ?: $this->beginning;
 
                         if (!$this->dateTime->isNotWorkingDay($hour->createdAt, $notWorkingDays)) {
@@ -107,16 +114,8 @@ class AdminController extends ControllerBase
                         }
                     }
 
-                    $lastStopTime = null;
-                    $startEndsCount = count($startEnds);
-                    $i = 0;
-                    foreach ($startEnds as $key => $startEnd) {
-                        if (++$i === $startEndsCount) {
-                            $lastStopTime = $startEnd->stop;
-                        }
-                    }
+                    if (!$this->dateTime->isNotWorkingDay($hour->createdAt, $notWorkingDays)) {
 
-                    if (!$this->dateTime->isNotWorkingDay($hour->createdAt, $notWorkingDays) && $lastStopTime) {
                         $assignment['less'] = (($this->hourForDay * 3600) > $this->dateTime->parseHour($total)) ?
                             $this->dateTime->getDiffBySecond($this->hourForDay * 3600, $this->dateTime->parseHour($total)) : null;
                     }
@@ -128,6 +127,7 @@ class AdminController extends ControllerBase
                     } else {
                         $entity['hourId'] = $startEnd->hour->id;
                         $entity['assignment'] = $assignment;
+                        $entity['action'] = 'update';
                     }
                 }
             }
@@ -146,7 +146,7 @@ class AdminController extends ControllerBase
         }
     }
 
-    protected function createCounter($users, $currentDate)
+    protected function createCounters($users, $currentDate)
     {
         foreach ($users as $user) {
             $hour = $this->getHoursModel()->findFirstByUserIdAndCreatedAt($user->id, $currentDate);
@@ -168,6 +168,92 @@ class AdminController extends ControllerBase
                     $this->flash->error($hour->getMessages());
                 }
             }
+        }
+    }
+
+    public function createCounterAction($userId, $createdAt)
+    {
+        if($this->request->isPost()) {
+            $messages = [];
+            $startEndId = null;
+
+            if ($month = $this->request->get('month')) {
+                $this->month = $month;
+            }
+
+            $notWorkingDays = $this->getNotWorkingDaysModel()->getAllByMonth($this->month);
+            $hour = $this->getHoursModel();
+
+            $validationMessages = $this->validation->validate($this->request->getPost());
+            $response = new Response();
+
+            $validationArrayMessages = [];
+
+            foreach ($validationMessages as $validationMessage) {
+                $validationArrayMessages[] = $validationMessage->getMessage();
+            }
+
+            if(!count($validationArrayMessages)) {
+
+                $start = $this->request->getPost('start');
+                $stop = $this->request->getPost('stop');
+
+                $startOnSecond = $this->dateTime->parseHour($start);
+                $stopOnSecond = $this->dateTime->parseHour($stop);
+
+                $hour->usersId = $userId;
+                $hour->total = $this->dateTime->getDiffBySecond($stopOnSecond, $startOnSecond);
+                $hour->createdAt = $createdAt;
+
+                $beginning = $this->getSettingsModel()->getValueByKey('beginning') ?: $this->beginning;
+
+                if (!$this->dateTime->isNotWorkingDay($hour->createdAt, $notWorkingDays)) {
+                    if (strtotime($beginning) < strtotime($start)) {
+                        $hour->late = 1;
+                    } else {
+                        $hour->late = 0;
+                    }
+
+                    $hour->less = (($this->hourForDay * 3600) > ($stopOnSecond - $startOnSecond)) ?
+                        $this->dateTime->getDiffBySecond($this->hourForDay * 3600, ($stopOnSecond - $startOnSecond)) : null;;
+                }
+
+                if(!$hour->save()) {
+                    $messages = $hour->getMessages();
+                } else {
+                    $startEnd = $this->getStartEndModel();
+
+                    $startEnd->hourId = $hour->id;
+                    $startEnd->start = $start;
+                    $startEnd->stop = $stop;
+
+                    if(!$startEnd->save()) {
+                        $messages = $startEnd->getMessages();
+                    } else {
+                        $startEndId = $startEnd->id;
+                    }
+                }
+            }
+
+            if (count($messages)) {
+                $response->setStatusCode(500, 'Internal Server Error');
+                $response->setContent(json_encode($messages));
+            } else {
+                $entity['validation'] = $validationArrayMessages;
+
+                $response->setStatusCode(200, 'OK');
+                $response->setContent(json_encode([
+                    'action' => 'create',
+                    'formAction' => $this->url->get(['for' => 'admin-update-start-end', 'id' => $startEndId]),
+                    'hourId' => $hour->id,
+                    'total' => $hour->total,
+                    'less' => $hour->less,
+                    'late' => $hour->late,
+                    'validation' => $validationArrayMessages
+                ]));
+            }
+
+            return $response;
         }
     }
 

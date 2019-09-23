@@ -77,7 +77,9 @@ class HoursController extends ControllerBase
         if (count($users)) {
             $this->view->lastStartTime = $lastStartTime;
             $this->view->users = $users;
+            $this->view->hoursCreatedAts = $this->dateTime->getArrayOfUsersHoursCreatedAt($users);
             $this->view->currentDate = $currentDate;
+            $this->view->currentTimestamp = strtotime($currentDate);
             $this->view->datesMonth = $datesMonth;
         }
 

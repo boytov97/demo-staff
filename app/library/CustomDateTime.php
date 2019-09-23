@@ -63,6 +63,7 @@ class CustomDateTime extends Component
             $datesMonth[$i] = [
                 'day'  => date("l", $mktime),
                 'date' => date('Y-m-d', $mktime),
+                'timestamp' => strtotime(date('Y-m-d', $mktime)),
                 'working_day' => (in_array(date("N", $mktime), [6, 7]) || in_array(date("j", $mktime), $notWorkingDays) ) ? 0 : 1
             ];
         }
@@ -98,7 +99,7 @@ class CustomDateTime extends Component
         $totalSecond = 0;
 
         foreach ($startEnds as $startEnd) {
-            if($startEnd->start) {
+            if($startEnd->start && $startEnd->start !== 'forgot' && $startEnd->stop !== 'forgot') {
                 $stop = $startEnd->stop ?: date('H:i:s');
                 $totalSecond = $totalSecond + (strtotime($stop) - strtotime($startEnd->start));
             }
@@ -149,5 +150,20 @@ class CustomDateTime extends Component
     public function parseHour($hour)
     {
         return strtotime($hour) - strtotime('00:00:00');
+    }
+
+    public function getArrayOfUsersHoursCreatedAt($users)
+    {
+        $hoursCreatedAts = [];
+
+        foreach ($users as $user) {
+            $hoursCreatedAts[$user->id] = [];
+
+            foreach ($user->hours as $hour) {
+                $hoursCreatedAts[$user->id][] = $hour->createdAt;
+            }
+        }
+
+        return $hoursCreatedAts;
     }
 }

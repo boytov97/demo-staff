@@ -142,6 +142,14 @@ $router->addPost(
     ]
 )->setName('admin-update-start-end');
 
+$router->addPost(
+    '/admin/{userId}/create-counter/{createdAt}',
+    [
+        'controller' => 'admin',
+        'action'     => 'createCounter',
+    ]
+)->setName('admin-create-counter');
+
 $router->add(
     '/admin/not-working-days',
     [
