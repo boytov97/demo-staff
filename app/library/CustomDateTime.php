@@ -135,15 +135,23 @@ class CustomDateTime extends Component
      * Возвращает сумму отработтаных часов в секундах
      *
      * @param $hours
+     * @param $notWorkingDays
      * @return false|int
      */
-    public function getTotalSecondOfHours($hours)
+    public function getTotalSecondOfHours($hours, $notWorkingDays)
     {
         $totalSecondPerMonth = 0;
+        $individuallyNotWds = $this->getIndividuallyWdModel()->getByWorkingDay(0);
 
         foreach($hours as $hour) {
             if($hour['total'] && (strtotime($hour['total']) - strtotime("00:00:00")) > 0) {
-                $totalSecondPerMonth = $totalSecondPerMonth + (strtotime($hour['total']) - strtotime("00:00:00") - 3600);
+                $totalSecondPerMonth = $totalSecondPerMonth + (strtotime($hour['total']) - strtotime("00:00:00"));
+
+                $forUsers = $this->getIndividuallyWdsForUser($individuallyNotWds, $hour['createdAt']);
+
+                if(!$this->isNotWorkingDay($hour['createdAt'], $notWorkingDays) && !in_array($hour['usersId'], $forUsers)) {
+                    $totalSecondPerMonth = $totalSecondPerMonth - 3600;
+                }
             }
         }
 

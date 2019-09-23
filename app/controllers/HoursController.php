@@ -71,7 +71,7 @@ class HoursController extends ControllerBase
 
         $notWorkingDays = $this->getNotWorkingDaysModel()->getAllByMonth($this->month);
         $datesMonth = $this->dateTime->getDates($this->month, $this->year, $notWorkingDays);
-        $totalSecondPerMonth = $this->getTotalSecondPerMonth($this->month, $this->year);
+        $totalSecondPerMonth = $this->getTotalSecondPerMonth($this->month, $this->year, $notWorkingDays);
         $workingDaysCount = $this->getWorkingDaysCount($datesMonth);
 
         if (count($users)) {
@@ -278,12 +278,12 @@ class HoursController extends ControllerBase
      * @param $year
      * @return mixed
      */
-    protected function getTotalSecondPerMonth($month, $year)
+    protected function getTotalSecondPerMonth($month, $year, $notWorkingDays)
     {
         $createdAt = $year . '-' . $month . '%';
         $hours = $this->getModel()->getByCreatedAt($createdAt, $this->identity['id']);
 
-        return $this->dateTime->getTotalSecondOfHours($hours);
+        return $this->dateTime->getTotalSecondOfHours($hours, $notWorkingDays);
     }
 
     /**

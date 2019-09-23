@@ -70,7 +70,7 @@ class IndividuallyWd extends \Phalcon\Mvc\Model
 
     public function getByWorkingDay($workingDay)
     {
-        $individuallyWds = IndividuallyWd::find([
+        $individuallyWds = self::find([
             'conditions' => 'working_day = :workingDay:',
             'bind' => [
                 'workingDay' => $workingDay
@@ -79,5 +79,4 @@ class IndividuallyWd extends \Phalcon\Mvc\Model
 
         return $individuallyWds;
     }
-
 }
