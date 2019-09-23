@@ -164,22 +164,43 @@
 
                         } else {
 
-                            var userTotalClass = '.user-total_' + parsedData.hourId;
-                            var userLessClass = '.user-less_' + parsedData.hourId;
-                            var userLateMark = '.user_late_mark_' + parsedData.hourId;
+                            var userTotalClass = 'user-total_' + parsedData.hourId;
+                            var userLessClass = 'user-less_' + parsedData.hourId;
 
-                            $(userTotalClass).html('total: ' + parsedData.assignment.total);
+                            if (parsedData.action === 'create') {
 
-                            if (parsedData.assignment.late === 1) {
-                                $(userLateMark).parent().parent().css('background-color', '#ffb9b2');
+                                var total = '<span class="total-hour ' + userTotalClass + '">' + parsedData.total + '</span>';
+                                var less = '';
+
+                                if(parsedData.less) {
+                                    less = '<span class="less-hour ' + userLessClass + '">' + parsedData.less + '</span>';
+                                }
+
+                                if(parsedData.late === 1) {
+                                    form.parent().parent().parent().css('background-color', '#ffb9b2');
+                                } else {
+                                    form.parent().parent().parent().css('background-color', 'rgba(0,0,0, 0)');
+                                }
+
+                                form.parent().next().html( total + less );
+                                form.attr('action', parsedData.formAction);
                             } else {
-                                $(userLateMark).parent().parent().css('background-color', 'rgba(0,0,0, 0)');
-                            }
 
-                            if (parsedData.assignment.less) {
-                                $(userLessClass).html('less: ' + parsedData.assignment.less);
-                            } else {
-                                $(userLessClass).html('');
+                                $('.' + userTotalClass).html('total: ' + parsedData.assignment.total);
+
+                                if (parsedData.assignment.late === 1) {
+
+                                    form.parent().parent().parent().css('background-color', '#ffb9b2');
+                                } else {
+
+                                    form.parent().parent().parent().css('background-color', 'rgba(0,0,0, 0)');
+                                }
+
+                                if (parsedData.assignment.less) {
+                                    $('.' + userLessClass).html('less: ' + parsedData.assignment.less);
+                                } else {
+                                    $('.' + userLessClass).html('');
+                                }
                             }
                         }
                     }

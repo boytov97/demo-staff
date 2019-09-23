@@ -3,6 +3,7 @@
 use Phalcon\Validation;
 use Phalcon\Validation\Validator\PresenceOf;
 use Phalcon\Validation\Validator\Callback;
+use Phalcon\Validation\Validator\Regex;
 
 class AdminValidation extends Validation
 {
@@ -13,17 +14,24 @@ class AdminValidation extends Validation
             new Callback(
                 [
                     'callback' => function($post) {
-                        if(isset($post['start'])) {
+                        if(empty($post['start'])) {
+                            return new PresenceOf(
+                                [
+                                    'message' => 'The end field is required',
+                                ]
+                            );
+                        }
+
+                        if(!empty($post['start']) && $post['start'] !== 'forgot') {
+
                             if(isset($post['stop']) && strtotime($post['start']) > strtotime($post['stop'])) {
                                 return false;
-                            } else {
-
-                                return new PresenceOf(
-                                    [
-                                        'message' => 'The end field is required',
-                                    ]
-                                );
                             }
+
+                            return new Regex([
+                                'pattern' => "/^(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]$/",
+                                'message' => "The start time is invalid"
+                            ]);
                         }
 
                         return true;
@@ -39,11 +47,22 @@ class AdminValidation extends Validation
                 [
                     'callback' => function($post) {
                         if(isset($post['stop'])) {
-                            return new PresenceOf(
-                                [
-                                    'message' => 'The end field is required',
-                                ]
-                            );
+                            if(empty($post['stop']) && $post['start'] !== 'forgot') {
+
+                                return new PresenceOf(
+                                    [
+                                        'message' => 'The end field is required',
+                                    ]
+                                );
+                            }
+
+                            if(!empty($post['stop']) && $post['stop'] !== 'forgot') {
+
+                                return new Regex([
+                                    'pattern' => "/^(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]$/",
+                                    'message' => "The stop time is invalid"
+                                ]);
+                            }
                         }
 
                         return true;

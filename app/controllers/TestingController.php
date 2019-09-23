@@ -23,5 +23,16 @@ class TestingController extends ControllerBase
         print_r( $not_working);
         echo '</pre>';
     }
+
+    public function hourAction()
+    {
+        $users = Users::find();
+
+        $hoursCreatedAts = $this->dateTime->getArrayOfUsersHoursCreatedAt($users);
+
+        echo '<pre>';
+        print_r($hoursCreatedAts);
+        echo '</pre>';
+    }
 }
 

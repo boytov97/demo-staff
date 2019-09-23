@@ -18,7 +18,12 @@ class MainTask extends Task
             foreach ($hour->startEnds as $startEnd) {
                 if(!$startEnd->start && !$startEnd->stop) {
                     $emptyStartEnd = StartEnd::findFirstById($startEnd->id);
-                    $emptyStartEnd->delete();
+
+                    $emptyStartEnd->assign([
+                        'start' => 'forgot'
+                    ]);
+
+                    $emptyStartEnd->save();
                 }
 
                 if($startEnd->start && !$startEnd->stop) {

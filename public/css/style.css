@@ -210,7 +210,7 @@ body {
     text-align: center;
 }
 
-.edit__icon_link, .start_end_save {
+.edit__icon_link, .start_end_save, .new_start_end_save {
     padding: 3px 5px;
     background: #007BFF;
     color: #fff;
@@ -222,7 +222,7 @@ body {
     color: #fff;
 }
 
-.edit__icon_link:hover, .start_end_save:hover, .delete__icon_link:hover {
+.edit__icon_link:hover, .start_end_save:hover, .delete__icon_link:hover, .new_start_end_save:hover {
     color: #ccc;
 }
 

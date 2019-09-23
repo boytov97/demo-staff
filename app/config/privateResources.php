@@ -29,6 +29,7 @@ return new Config([
         'admin' => [
             'index',
             'updateStartEnd',
+            'createCounter',
         ],
         'permissions' => [
             'index'

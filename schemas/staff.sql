@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS `permissions` (
   `action` varchar(16) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `profilesId` (`profilesId`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=24 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=25 ;
 
 --
 -- Dumping data for table `permissions`
@@ -60,6 +60,7 @@ INSERT INTO `permissions` (`id`, `profilesId`, `resource`, `action`) VALUES
 (21, 2, 'hours', 'index'),
 (22, 2, 'hours', 'update'),
 (23, 2, 'hours', 'updateTotal');
+(24, 1, 'admin', 'createCounter');
 
 --
 -- Table structure for table `users`

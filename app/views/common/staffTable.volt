@@ -28,113 +28,69 @@
                                 <input type="checkbox" disabled {{ date['working_day'] ? 'checked' : '' }}>
 
                                 {% for hour in user.hours %}
-                                    {% if hour.createdAt == date['date'] %}
+                                    {% if hour.createdAt === date['date'] %}
 
-                                            {% if user.id == authUser['id'] and currentDate === date['date'] or admin is defined and admin and currentDate === date['date']  %}
-                                                <span class="user_late_mark_{{ hour.id }} {{ hour.late ? 'auth_user_is_late' : '' }}"></span>
-                                                <input type="hidden" id="update-hours-link"
-                                                       value="{{ url(['for': 'hours-update-total', 'id': hour.id ]) }}">
+                                        {% if user.id == authUser['id'] and currentDate === date['date'] or admin is defined and admin and currentDate === date['date']  %}
+                                            <span class="user_late_mark_{{ hour.id }} {{ hour.late ? 'auth_user_is_late' : '' }}"></span>
+                                            <input type="hidden" id="update-hours-link"
+                                                   value="{{ url(['for': 'hours-update-total', 'id': hour.id ]) }}">
 
-                                                {% for startEnd in hour.startEnds %}
+                                            {% for startEnd in hour.startEnds %}
 
-                                                    {% if loop.last %}
-                                                        {% set endStop = startEnd.stop ? startEnd.stop :
-                                                            ' - <a data-href="' ~
-                                                            url(['for': 'hours-update', 'id': hour.id, 'startEndId': startEnd.id ])
-                                                            ~ '" name="stop" class="update-hours">stop</a>' %}
+                                                {% if loop.last %}
+                                                    {% set endStop = startEnd.stop ? startEnd.stop :
+                                                        ' - <a data-href="' ~
+                                                        url(['for': 'hours-update', 'id': hour.id, 'startEndId': startEnd.id ])
+                                                        ~ '" name="stop" class="update-hours">stop</a>' %}
 
-                                                        <div class="counter-value__wrapper">
-                                                            <span class="start-end_{{ startEnd.id }}">
-                                                                {% if startEnd.start is not empty %}
-                                                                    {% if admin is defined and admin %}
-                                                                        <form action="{{ url(['for': 'admin-update-start-end', 'id': startEnd.id]) }}"
-                                                                              method="POST" class="start-end__form">
+                                                    <div class="counter-value__wrapper">
+                                                        <span class="start-end_{{ startEnd.id }}">
+                                                            {% if startEnd.start is not empty %}
+                                                                {% if admin is defined and admin %}
+                                                                    <form action="{{ url(['for': 'admin-update-start-end', 'id': startEnd.id]) }}"
+                                                                          method="POST" class="start-end__form">
 
-                                                                            <input type="time" name="start" value="{{ startEnd.start }}"
-                                                                                   class="start-end__input input_without_border" step="1" required> -
+                                                                        <input type="text" name="start" value="{{ startEnd.start }}"
+                                                                               class="start-end__input input_without_border" required> -
 
-                                                                            <a data-href="" class="start_end_edit" title="edit">
-                                                                                <i class="fa fa-pencil"></i>
-                                                                            </a>
+                                                                        <a data-href="" class="start_end_edit" title="edit">
+                                                                            <i class="fa fa-pencil"></i>
+                                                                        </a>
 
-                                                                            <button class="input-group-addon btn start_end_save hidden_start-end_btn"
-                                                                                    title="save">
-                                                                                <i class="fa fa-floppy-o" aria-hidden="true"></i>
-                                                                            </button>
-                                                                        </form>
+                                                                        <button class="input-group-addon btn start_end_save hidden_start-end_btn"
+                                                                                title="save">
+                                                                            <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                                                                        </button>
+                                                                    </form>
 
-                                                                        <span class="admin_stop_dtn">
-                                                                            {{ '<a data-href="' ~
-                                                                            url(['for': 'hours-update', 'id': hour.id, 'startEndId': startEnd.id ])
-                                                                            ~ '" name="stop" class="update-hours">stop</a>' }}
-                                                                        </span>
-                                                                    {% else %}
-                                                                        {{ startEnd.start ~ endStop }}
-                                                                    {% endif %}
+                                                                    <span class="admin_stop_dtn">
+                                                                        {{ '<a data-href="' ~
+                                                                        url(['for': 'hours-update', 'id': hour.id, 'startEndId': startEnd.id ])
+                                                                        ~ '" name="stop" class="update-hours">stop</a>' }}
+                                                                    </span>
                                                                 {% else %}
-                                                                    {{ '<a data-href="' ~
-                                                                      url(['for': 'hours-update', 'id': hour.id, 'startEndId': startEnd.id ])
-                                                                      ~ '" name="start" class="update-hours">start</a>' }}
+                                                                    {{ startEnd.start ~ endStop }}
                                                                 {% endif %}
-                                                            </span>
-                                                        </div>
-                                                    {% else %}
-                                                        <div class="counter-value__wrapper">
-                                                            {% if admin is defined and admin %}
-                                                                <form action="{{ url(['for': 'admin-update-start-end', 'id': startEnd.id]) }}"
-                                                                      method="POST" class="start-end__form">
-
-                                                                    <input type="time" name="start" value="{{ startEnd.start }}"
-                                                                           class="start-end__input input_without_border" step="1" required> -
-
-                                                                    <input type="time" name="stop" value="{{ startEnd.stop }}"
-                                                                           class="start-end__input input_without_border" step="1" required>
-
-                                                                    <a data-href="" class="start_end_edit" title="edit">
-                                                                        <i class="fa fa-pencil"></i>
-                                                                    </a>
-
-                                                                    <button class="input-group-addon btn start_end_save hidden_start-end_btn"
-                                                                            title="save">
-                                                                        <i class="fa fa-floppy-o" aria-hidden="true"></i>
-                                                                    </button>
-                                                                </form>
                                                             {% else %}
-                                                                <span class="start-end_{{ startEnd.id }}">
-                                                                    {{ startEnd.start }} - {{ startEnd.stop }}
-                                                                </span>
+                                                                {{ '<a data-href="' ~
+                                                                  url(['for': 'hours-update', 'id': hour.id, 'startEndId': startEnd.id ])
+                                                                  ~ '" name="start" class="update-hours">start</a>' }}
                                                             {% endif %}
-                                                        </div>
-                                                    {% endif %}
-                                                {% endfor %}
-
-                                                <div class="counter-value__wrapper">
-                                                    <span class="total-hour user-total_{{ hour.id }}">
-                                                        {% if hour.total is not empty %}
-                                                            total: {{ hour.total }}
-                                                        {% endif %}
-                                                    </span>
-
-                                                    <span class="less-hour user-less_{{ hour.id }}">
-                                                        {% if hour.less is not empty %}
-                                                            less: {{ hour.less }}
-                                                        {% endif %}
-                                                    </span>
-                                                </div>
-                                            {% elseif currentDate !== date['date'] %}
-                                                <span class="user_late_mark_{{ hour.id }} {{ hour.late ? 'user_is_late' : '' }}"></span>
-
-                                                {% for startEnd in hour.startEnds %}
-                                                    {% if admin is defined and admin %}
-                                                        <div class="counter-value__wrapper">
+                                                        </span>
+                                                    </div>
+                                                {% else %}
+                                                    <div class="counter-value__wrapper">
+                                                        {% if admin is defined and admin %}
                                                             <form action="{{ url(['for': 'admin-update-start-end', 'id': startEnd.id]) }}"
-                                                                method="POST" class="start-end__form">
+                                                                  method="POST" class="start-end__form">
 
-                                                                <input type="time" name="start" value="{{ startEnd.start }}"
-                                                                       class="start-end__input input_without_border" step="1" required> -
+                                                                <input type="text" name="start" value="{{ startEnd.start }}"
+                                                                       class="start-end__input input_without_border" required> -
 
-                                                                <input type="time" name="stop" value="{{ startEnd.stop }}"
-                                                                       class="start-end__input input_without_border" step="1" required>
+                                                                <input type="text" name="stop" value="{{ startEnd.stop }}"
+                                                                       class="start-end__input input_without_border" required>
+
+                                                                <input type="hidden" name="month" value="{{ defaultMonth }}">
 
                                                                 <a data-href="" class="start_end_edit" title="edit">
                                                                     <i class="fa fa-pencil"></i>
@@ -145,34 +101,119 @@
                                                                     <i class="fa fa-floppy-o" aria-hidden="true"></i>
                                                                 </button>
                                                             </form>
-                                                        </div>
-                                                    {% else %}
-                                                        <div class="counter-value__wrapper">
-                                                            {{ startEnd.start }} -
-                                                            {% if startEnd.stop === 'forgot' %}
-                                                                <span class="forgotten">{{ startEnd.stop }}</span>
-                                                            {% else %}
-                                                                {{ startEnd.stop }}
-                                                            {% endif %}
-                                                        </div>
-                                                    {% endif %}
-                                                {% endfor %}
-
-                                                <p class="counter-value__wrapper">
-                                                    {% if hour.total is not empty %}
-                                                        <span class="total-hour user-total_{{ hour.id }}">total: {{ hour.total }}</span>
-                                                    {% endif %}
-
-                                                    <span class="less-hour user-less_{{ hour.id }}">
-                                                        {% if hour.less is not empty %}
-                                                            less: {{ hour.less }}
+                                                        {% else %}
+                                                            <span class="start-end_{{ startEnd.id }}">
+                                                                {{ startEnd.start }} - {{ startEnd.stop }}
+                                                            </span>
                                                         {% endif %}
-                                                    </span>
-                                                </p>
-                                            {% endif %}
+                                                    </div>
+                                                {% endif %}
+                                            {% endfor %}
+
+                                            <div class="counter-value__wrapper">
+                                                <span class="total-hour user-total_{{ hour.id }}">
+                                                    {% if hour.total is not empty %}
+                                                        total: {{ hour.total }}
+                                                    {% endif %}
+                                                </span>
+
+                                                <span class="less-hour user-less_{{ hour.id }}">
+                                                    {% if hour.less is not empty %}
+                                                        less: {{ hour.less }}
+                                                    {% endif %}
+                                                </span>
+                                            </div>
+                                        {% elseif currentDate !== date['date'] %}
+                                            <span class="user_late_mark_{{ hour.id }} {{ hour.late ? 'user_is_late' : '' }}"></span>
+
+                                            {% for startEnd in hour.startEnds %}
+                                                {% if admin is defined and admin %}
+                                                    <div class="counter-value__wrapper">
+                                                        <form action="{{ url(['for': 'admin-update-start-end', 'id': startEnd.id]) }}"
+                                                            method="POST" class="start-end__form">
+
+                                                            <input type="text" name="start" value="{{ startEnd.start }}"
+                                                                   class="start-end__input input_without_border" required> -
+
+                                                            <input type="text" name="stop" value="{{ startEnd.stop }}"
+                                                                   class="start-end__input input_without_border" required>
+
+                                                            <input type="hidden" name="month" value="{{ defaultMonth }}">
+
+                                                            <a data-href="" class="start_end_edit" title="edit">
+                                                                <i class="fa fa-pencil"></i>
+                                                            </a>
+
+                                                            <button class="input-group-addon btn start_end_save hidden_start-end_btn"
+                                                                    title="save">
+                                                                <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                {% else %}
+                                                    <div class="counter-value__wrapper">
+                                                        {% if startEnd.start === 'forgot' %}
+                                                            <span class="forgotten">{{ startEnd.start }}</span> -
+                                                        {% else %}
+                                                            {{ startEnd.start }} -
+                                                        {% endif %}
+
+
+                                                        {% if startEnd.stop === 'forgot' %}
+                                                            <span class="forgotten">{{ startEnd.stop }}</span>
+                                                        {% else %}
+                                                            {{ startEnd.stop }}
+                                                        {% endif %}
+                                                    </div>
+                                                {% endif %}
+                                            {% endfor %}
+
+                                            <p class="counter-value__wrapper">
+                                                {% if hour.total is not empty %}
+                                                    <span class="total-hour user-total_{{ hour.id }}">total: {{ hour.total }}</span>
+                                                {% endif %}
+
+                                                <span class="less-hour user-less_{{ hour.id }}">
+                                                    {% if hour.less is not empty %}
+                                                        less: {{ hour.less }}
+                                                    {% endif %}
+                                                </span>
+                                            </p>
+                                        {% endif %}
 
                                     {% endif %}
                                 {% endfor %}
+
+                                {% if admin is defined and admin %}
+                                    {% if date['timestamp'] < currentTimestamp %}
+                                        {% if not in_array(date['date'], hoursCreatedAts[user.id]) %}
+                                            <div class="counter-value__wrapper">
+                                                <form action="{{ url(['for': 'admin-create-counter', 'userId': user.id, 'createdAt': date['date'] ]) }}"
+                                                      method="POST" class="start-end__form">
+
+                                                    <input type="text" name="start" value="" placeholder="start time"
+                                                           class="start-end__input input_without_border" required> -
+
+                                                    <input type="text" name="stop" value="" placeholder="stop time"
+                                                           class="start-end__input input_without_border" required>
+
+                                                    <input type="hidden" name="month" value="{{ defaultMonth }}">
+
+                                                    <a data-href="" class="start_end_edit" title="edit">
+                                                        <i class="fa fa-pencil"></i>
+                                                    </a>
+
+                                                    <button class="input-group-addon btn start_end_save hidden_start-end_btn"
+                                                            title="save">
+                                                        <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+
+                                            <p class="counter-value__wrapper"></p>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
                             </div>
                         </td>
                     {% endfor %}

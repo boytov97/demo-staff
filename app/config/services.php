@@ -56,6 +56,11 @@ $di->setShared('view', function () {
                 'compileAlways' => true
             ]);
 
+            //load function php
+            $compiler = $volt->getCompiler();
+            //define variable translate
+            $compiler->addFunction('in_array', 'in_array');
+
             return $volt;
         }
     ]);
