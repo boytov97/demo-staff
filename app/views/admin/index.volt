@@ -210,5 +210,29 @@
                 }
             });
         });
+
+        $('.working_day_checkbox').on('change', function() {
+            var url = $(this).attr('name');
+            var data = {};
+
+            if($(this).prop("checked") == true){
+                data = {'checked': 1};
+            }
+            else if($(this).prop("checked") == false){
+                data = {'checked': 0};
+            }
+
+           $.ajax({
+                type: 'POST',
+                url: url,
+                data: data,
+                success: function (data) {
+
+                },
+                error: function (errors) {
+                    alert(errors.status + ' ' + errors.statusText);
+                }
+            });
+        });
     });
 </script>

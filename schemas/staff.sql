@@ -188,3 +188,16 @@ CREATE TABLE IF NOT EXISTS `settings` (
   `value` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+--
+-- Table structure for table `individually_wd`
+--
+
+DROP TABLE IF EXISTS `individually_wd`;
+CREATE TABLE IF NOT EXISTS `individually_wd` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `userId` int(10) unsigned NOT NULL,
+  `createdAt` date NOT NULL,
+  `working_day` boolean NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

@@ -53,6 +53,9 @@ class CustomDateTime extends Component
             $notWorkingDays[] = $notWorkingDay->day;
         }
 
+        $individuallyWds = $this->getIndividuallyWdModel()->getByWorkingDay(1);
+        $individuallyNotWds = $this->getIndividuallyWdModel()->getByWorkingDay(0);
+
         $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $month, $year);
 
         $datesMonth = [];
@@ -60,11 +63,17 @@ class CustomDateTime extends Component
         for ($i = 1; $i <= $daysInMonth; $i++)  {
             $mktime = mktime(0,0,0, $month, $i, $year);
 
+            $notWdForUsers = $this->getIndividuallyWdsForUser($individuallyNotWds, date('Y-m-d', $mktime));
+            $wdForUsers = $this->getIndividuallyWdsForUser($individuallyWds, date('Y-m-d', $mktime));
+
             $datesMonth[$i] = [
                 'day'  => date("l", $mktime),
                 'date' => date('Y-m-d', $mktime),
                 'timestamp' => strtotime(date('Y-m-d', $mktime)),
-                'working_day' => (in_array(date("N", $mktime), [6, 7]) || in_array(date("j", $mktime), $notWorkingDays) ) ? 0 : 1
+                'working_day' => [
+                    'woDay' => (in_array(date("N", $mktime), [6, 7]) || in_array(date("j", $mktime), $notWorkingDays) ) ? 0 : 1,
+                    'forUsers' => (in_array(date("N", $mktime), [6, 7]) || in_array(date("j", $mktime), $notWorkingDays) ) ? $wdForUsers : $notWdForUsers,
+                ]
             ];
         }
 
@@ -165,5 +174,23 @@ class CustomDateTime extends Component
         }
 
         return $hoursCreatedAts;
+    }
+
+    protected function getIndividuallyWdsForUser($individuallyWds, $date)
+    {
+        $forUsers = [];
+
+        foreach ($individuallyWds as $individuallyWd) {
+            if($individuallyWd->createdAt === $date) {
+                $forUsers[] = $individuallyWd->userId;
+            }
+        }
+
+        return $forUsers;
+    }
+
+    protected function getIndividuallyWdModel()
+    {
+        return new IndividuallyWd();
     }
 }

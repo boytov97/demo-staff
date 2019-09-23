@@ -25,7 +25,24 @@
                     {% for user in users %}
                         <td>
                             <div class="hours__wrapper">
-                                <input type="checkbox" disabled {{ date['working_day'] ? 'checked' : '' }}>
+
+                                {% if admin is defined and admin %}
+                                    {% if date['working_day']['woDay'] %}
+                                        <input type="checkbox" {{ (in_array(user.id, date['working_day']['forUsers'])) ? '' : 'checked' }}
+                                            name="{{ url(['for': 'individually_wd-create-update', 'userId': user.id, 'createdAt': date['date'] ]) }}"
+                                               class="working_day_checkbox">
+                                    {% else %}
+                                        <input type="checkbox" {{ (in_array(user.id, date['working_day']['forUsers'])) ? 'checked' : '' }}
+                                               name="{{ url(['for': 'individually_wd-create-update', 'userId': user.id, 'createdAt': date['date'] ]) }}"
+                                                class="working_day_checkbox">
+                                    {% endif %}
+                                {% else %}
+                                    {% if date['working_day']['woDay'] %}
+                                        <input type="checkbox" disabled {{ (in_array(user.id, date['working_day']['forUsers'])) ? '' : 'checked' }}>
+                                    {% else %}
+                                        <input type="checkbox" disabled {{ (in_array(user.id, date['working_day']['forUsers'])) ? 'checked' : '' }}>
+                                    {% endif %}
+                                {% endif %}
 
                                 {% for hour in user.hours %}
                                     {% if hour.createdAt === date['date'] %}

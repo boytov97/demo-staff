@@ -190,4 +190,12 @@ $router->add(
     ]
 )->setName('permissions-index');
 
+$router->addPost(
+    '/admin/individually_wd/{userId}/create-update/{createdAt}',
+    [
+        'controller' => 'individually_wd',
+        'action'     => 'createOrUpdate',
+    ]
+)->setName('individually_wd-create-update');
+
 return $router;

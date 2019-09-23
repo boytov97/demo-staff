@@ -24,15 +24,30 @@ class TestingController extends ControllerBase
         echo '</pre>';
     }
 
-    public function hourAction()
+    public function hourAction($wd)
     {
-        $users = Users::find();
 
-        $hoursCreatedAts = $this->dateTime->getArrayOfUsersHoursCreatedAt($users);
+
+        $individuallyWds = $this->getIndividuallyWdModel()->getByWorkingDay(1);
+        $individuallyNotWds = $this->getIndividuallyWdModel()->getByWorkingDay(0);
+
+        $forUsers = [];
+
+        foreach ($individuallyNotWds as $individuallyWd) {
+            if($individuallyWd->createdAt === '2019-09-24') {
+                $forUsers[] = $individuallyWd->userId;
+            }
+        }
+
 
         echo '<pre>';
-        print_r($hoursCreatedAts);
+        print_r($individuallyWds[0]);
         echo '</pre>';
+    }
+
+    protected function getIndividuallyWdModel()
+    {
+        return new IndividuallyWd();
     }
 }
 
