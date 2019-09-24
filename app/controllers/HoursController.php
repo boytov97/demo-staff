@@ -263,7 +263,7 @@ class HoursController extends ControllerBase
         $workingDaysCount = 0;
 
         foreach ($datesMonth as $dateMonth) {
-            if ($dateMonth['working_day']) {
+            if ($dateMonth['working_day']['woDay']) {
                 $workingDaysCount++;
             }
         }

@@ -59,7 +59,7 @@ INSERT INTO `permissions` (`id`, `profilesId`, `resource`, `action`) VALUES
 (20, 2, 'users', 'changePassword'),
 (21, 2, 'hours', 'index'),
 (22, 2, 'hours', 'update'),
-(23, 2, 'hours', 'updateTotal');
+(23, 2, 'hours', 'updateTotal'),
 (24, 1, 'admin', 'createCounter');
 
 --

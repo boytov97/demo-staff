@@ -142,15 +142,23 @@ class CustomDateTime extends Component
     {
         $totalSecondPerMonth = 0;
         $individuallyNotWds = $this->getIndividuallyWdModel()->getByWorkingDay(0);
+        $individuallyWds = $this->getIndividuallyWdModel()->getByWorkingDay(1);
 
         foreach($hours as $hour) {
             if($hour['total'] && (strtotime($hour['total']) - strtotime("00:00:00")) > 0) {
                 $totalSecondPerMonth = $totalSecondPerMonth + (strtotime($hour['total']) - strtotime("00:00:00"));
 
-                $forUsers = $this->getIndividuallyWdsForUser($individuallyNotWds, $hour['createdAt']);
+                $notWdForUsers = $this->getIndividuallyWdsForUser($individuallyNotWds, $hour['createdAt']);
+                $wdForUsers = $this->getIndividuallyWdsForUser($individuallyWds, $hour['createdAt']);
 
-                if(!$this->isNotWorkingDay($hour['createdAt'], $notWorkingDays) && !in_array($hour['usersId'], $forUsers)) {
-                    $totalSecondPerMonth = $totalSecondPerMonth - 3600;
+                if($this->isNotWorkingDay($hour['createdAt'], $notWorkingDays)) {
+                    if(in_array($hour['usersId'], $wdForUsers)) {
+                        $totalSecondPerMonth = $totalSecondPerMonth - 3600;
+                    }
+                } else {
+                    if(!in_array($hour['usersId'], $notWdForUsers)) {
+                        $totalSecondPerMonth = $totalSecondPerMonth - 3600;
+                    }
                 }
             }
         }

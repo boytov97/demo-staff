@@ -37,7 +37,6 @@ class IndividuallyWdController extends \Phalcon\Mvc\Controller
                 }
             }
 
-
             if (count($messages)) {
                 $response->setStatusCode(500, 'Internal Server Error');
                 $response->setContent(json_encode($messages));
