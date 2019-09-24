@@ -381,7 +381,7 @@ class HoursController extends ControllerBase
                 'SUM(uh.late) AS beenLate',
             ])
             ->join('Hours', 'uh.usersId = Users.id', 'uh')
-            ->where('uh.late = 1')->where('createdAt LIKE "' . $createdAt . '"')
+            ->where('uh.late = 1')->andWhere('createdAt LIKE "' . $createdAt . '"')
             ->groupBy('Users.id')->orderBy('SUM(late) DESC')->limit(3)->getQuery()
             ->execute();
 

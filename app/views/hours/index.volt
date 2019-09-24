@@ -25,21 +25,19 @@
                         <p>Главные опоздуны</p>
 
                         {% for lateUser in lateUsers %}
-                            {% if lateUser.beenLate > 0  %}
-                                <div class="late__card">
-                                    <div class="late__image__wrapper">
-                                        {% if lateUser.image is not empty %}
-                                            {{ image(lateUser.image, 'alt': lateUser.name, 'class': 'late__image') }}
-                                        {% else %}
-                                            {{ image('img/default.jpg', 'alt': lateUser.name, 'class': 'late__image') }}
-                                        {% endif %}
-                                    </div>
-
-                                    <br>
-                                    <p>{{ lateUser.name }}</p>
-                                    <span>{{ lateUser.beenLate }} pаз</span>
+                            <div class="late__card">
+                                <div class="late__image__wrapper">
+                                    {% if lateUser.image is not empty %}
+                                        {{ image(lateUser.image, 'alt': lateUser.name, 'class': 'late__image') }}
+                                    {% else %}
+                                        {{ image('img/default.jpg', 'alt': lateUser.name, 'class': 'late__image') }}
+                                    {% endif %}
                                 </div>
-                            {% endif %}
+
+                                <br>
+                                <p>{{ lateUser.name }}</p>
+                                <span>{{ lateUser.beenLate }} pаз</span>
+                            </div>
                         {% endfor %}
                     </div>
                 {% endif %}
